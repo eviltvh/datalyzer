@@ -3,149 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POLPO ANALYTICS</title>
+  <title>POLPO // ANALYTICS</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-void: #0a0a0f;
-      --bg-card: #111118;
-      --bg-card-hover: #16161f;
-      --border: #1e1e2e;
-      --border-glow: #2a2a3e;
-      --text-primary: #e0e0e8;
-      --text-secondary: #6e6e82;
-      --text-muted: #3e3e52;
-      --accent-mutual: #00e5a0;
-      --accent-mutual-dim: #00e5a033;
-      --accent-ghost: #ff3d6e;
-      --accent-ghost-dim: #ff3d6e33;
-      --accent-info: #5e8eff;
-      --accent-warn: #ffaa2e;
-      --palette-1: #00e5a0;
-      --palette-2: #5e8eff;
-      --palette-3: #ff3d6e;
-      --palette-4: #ffaa2e;
-      --palette-5: #c77dff;
-      --palette-6: #00d4ff;
-      --palette-7: #ff6b9d;
-      --palette-8: #7bed9f;
-      --palette-9: #ffa502;
-      --palette-10: #a29bfe;
-      --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      /* SNCTVM Base */
+      --bg-deep: #0A0A0A;
+      --bg-card: #FAFAF9;
+      --bg-secondary: #F5F5F4;
+      --bg-card-dark: #111111;
+
+      /* Text */
+      --text-black: #000000;
+      --text-white: #FAFAF9;
+      --text-muted: #737373;
+      --text-disabled: #D4D4D4;
+
+      /* Accents */
+      --accent-neon: #E8FF00;
+      --accent-pink: #FF3366;
+      --accent-blue: #00D9FF;
+
+      /* Transparent variants */
+      --accent-neon-a: #E8FF0044;
+      --accent-pink-a: #FF336644;
+      --accent-blue-a: #00D9FF33;
+
+      /* Palette for pie charts */
+      --palette-1: #E8FF00;
+      --palette-2: #FF3366;
+      --palette-3: #00D9FF;
+      --palette-4: #000000;
+      --palette-5: #737373;
+      --palette-6: #FAFAF9;
+
+      /* Borders */
+      --border-thick: 3px solid #000000;
+      --border-medium: 2px solid #000000;
+      --border-thin: 1px solid #D4D4D4;
+      --border-accent: 3px solid #E8FF00;
+
+      /* Shadows - HARD, no blur */
+      --shadow-hard: 5px 5px 0px #000000;
+      --shadow-small: 3px 3px 0px #000000;
+      --shadow-accent: 4px 4px 0px #E8FF00;
+
+      /* Typography */
+      --font-serif: 'EB Garamond', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', sans-serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: var(--bg-void);
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-deep);
+      color: var(--text-white);
+      font-family: var(--font-sans);
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: var(--noise);
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    .scanline {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent-mutual), transparent);
-      opacity: 0.3;
-      animation: scanline 4s linear infinite;
-      z-index: 9998;
-      pointer-events: none;
-    }
-
-    @keyframes scanline {
-      0% { top: -2px; }
-      100% { top: 100vh; }
-    }
-
-    /* ── HEADER ── */
+    /* ══════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════ */
     .header {
-      padding: 2rem 2rem 1rem;
-      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 2.5rem 1.8rem;
+      border-bottom: var(--border-thick);
+      border-color: #E8FF00;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
       position: relative;
     }
 
-    .header h1 {
-      font-family: 'Space Mono', monospace;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: var(--accent-mutual);
-      text-shadow: 0 0 30px var(--accent-mutual-dim);
+    .header::after {
+      content: '';
+      position: absolute;
+      left: 2.5rem;
+      bottom: -3px;
+      width: 120px;
+      height: 3px;
+      background: var(--accent-neon);
     }
 
-    .header h1 span {
-      color: var(--text-muted);
-      font-weight: 400;
+    .header-left {}
+
+    .header h1 {
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      font-weight: 500;
+      color: var(--text-white);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .header h1 .slash {
+      font-family: var(--font-mono);
+      color: var(--accent-neon);
+      font-weight: 300;
+      font-size: 1.8rem;
+      margin: 0 0.3rem;
     }
 
     .header .subtitle {
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      margin-top: 0.3rem;
-      letter-spacing: 0.08em;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      margin-top: 0.5rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
     }
 
-    /* ── UPLOAD ZONE ── */
+    .header-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-black);
+      background: var(--accent-neon);
+      border: 2px solid var(--text-black);
+      padding: 0.35rem 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-small);
+    }
+
+    /* ══════════════════════════════════════════
+       UPLOAD ZONE
+    ══════════════════════════════════════════ */
     .upload-zone {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 60vh;
+      min-height: 65vh;
       padding: 2rem;
-      animation: fadeIn 0.6s ease;
+      animation: fadeUp 0.5s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .drop-area {
-      border: 2px dashed var(--border-glow);
-      border-radius: 4px;
-      padding: 3rem 4rem;
+      background: var(--bg-card);
+      border: var(--border-thick);
+      padding: 3.5rem 4rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
       position: relative;
-      max-width: 500px;
+      max-width: 520px;
       width: 100%;
+      box-shadow: var(--shadow-hard);
+      transition: box-shadow 0.15s ease-out, transform 0.15s ease-out;
     }
 
-    .drop-area:hover, .drop-area.dragover {
-      border-color: var(--accent-mutual);
-      background: var(--accent-mutual-dim);
+    .drop-area:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0px #000000;
+    }
+
+    .drop-area.dragover {
+      border-color: var(--accent-neon);
+      box-shadow: 5px 5px 0px var(--accent-neon);
     }
 
     .drop-area .icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      display: block;
     }
 
-    .drop-area .label {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+    .drop-area .label-text {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      color: var(--text-black);
+      margin-bottom: 0.4rem;
+    }
+
+    .drop-area .label-text strong {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      background: var(--accent-neon);
+      padding: 0.1em 0.4em;
+      border: 1px solid var(--text-black);
     }
 
     .drop-area .hint {
-      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
       color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 0.6rem;
     }
 
     .drop-area input[type="file"] {
@@ -155,57 +208,146 @@
       cursor: pointer;
     }
 
-    /* ── DASHBOARD ── */
+    /* Decorative bracket marks */
+    .drop-area::before {
+      content: '[';
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      color: var(--text-disabled);
+      font-weight: 300;
+    }
+    .drop-area::after {
+      content: ']';
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      color: var(--text-disabled);
+      font-weight: 300;
+    }
+
+    /* ══════════════════════════════════════════
+       DASHBOARD
+    ══════════════════════════════════════════ */
     .dashboard {
       display: none;
-      padding: 1.5rem;
-      animation: fadeIn 0.5s ease;
+      padding: 2rem 2.5rem;
+      animation: fadeUp 0.4s ease-out;
     }
 
     .dashboard.visible {
       display: block;
     }
 
-    /* ── STATS BAR ── */
+    /* Section titles */
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--accent-neon);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: #222;
+      margin-left: 0.5rem;
+    }
+
+    /* ══════════════════════════════════════════
+       STATS BAR
+    ══════════════════════════════════════════ */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
     .stat-card {
       background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.2rem;
-      transition: border-color 0.3s;
+      border: var(--border-medium);
+      padding: 1.2rem 1.4rem;
+      position: relative;
+      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
     }
 
     .stat-card:hover {
-      border-color: var(--border-glow);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-small);
     }
 
     .stat-card .stat-label {
-      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 0.4rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
     }
 
     .stat-card .stat-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 1.6rem;
-      font-weight: 700;
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-black);
+      line-height: 1;
     }
 
-    .stat-card .stat-value.mutual { color: var(--accent-mutual); }
-    .stat-card .stat-value.ghost { color: var(--accent-ghost); }
-    .stat-card .stat-value.info { color: var(--accent-info); }
-    .stat-card .stat-value.warn { color: var(--accent-warn); }
+    /* Colored left bar indicator */
+    .stat-card.mutual { border-left: 4px solid var(--accent-neon); }
+    .stat-card.mutual .stat-value { color: #1a1a1a; }
+    .stat-card.ghost { border-left: 4px solid var(--accent-pink); }
+    .stat-card.ghost .stat-value { color: #1a1a1a; }
+    .stat-card.info { border-left: 4px solid var(--text-black); }
+    .stat-card.info .stat-value { color: var(--text-black); }
+    .stat-card.warn { border-left: 4px solid var(--accent-blue); }
+    .stat-card.warn .stat-value { color: #1a1a1a; }
 
-    /* ── CHART GRID ── */
+    /* Small colored dot next to label */
+    .stat-card.mutual .stat-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--accent-neon);
+      border: 1px solid var(--text-black);
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+    .stat-card.ghost .stat-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--accent-pink);
+      border: 1px solid var(--text-black);
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+
+    /* ══════════════════════════════════════════
+       CHART GRID
+    ══════════════════════════════════════════ */
     .chart-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -215,9 +357,8 @@
 
     .chart-card {
       background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.5rem;
+      border: var(--border-thick);
+      padding: 1.8rem;
       position: relative;
       overflow: hidden;
     }
@@ -227,11 +368,12 @@
     }
 
     .chart-card h3 {
-      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 1rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.2rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -239,20 +381,38 @@
 
     .chart-card h3 .badge {
       display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 2px;
-      font-size: 0.6rem;
-      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      border: 2px solid var(--text-black);
     }
 
     .badge.mutual-badge {
-      background: var(--accent-mutual-dim);
-      color: var(--accent-mutual);
+      background: var(--accent-neon);
+      color: var(--text-black);
     }
 
     .badge.ghost-badge {
-      background: var(--accent-ghost-dim);
-      color: var(--accent-ghost);
+      background: var(--accent-pink);
+      color: var(--text-white);
+    }
+
+    .badge.compare-badge {
+      background: var(--text-black);
+      color: var(--text-white);
+    }
+
+    /* Decorative corner marks on chart cards */
+    .chart-card::before {
+      content: '+';
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-disabled);
+      font-weight: 300;
     }
 
     .chart-container {
@@ -261,57 +421,105 @@
     }
 
     .chart-container.pie {
-      max-width: 320px;
+      max-width: 300px;
       margin: 0 auto;
     }
 
-    /* ── FOOTER ── */
+    /* ══════════════════════════════════════════
+       DISTRIBUTION SECTION - 3 charts
+    ══════════════════════════════════════════ */
+    .dist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .dist-grid .chart-card.full-polygon {
+      grid-column: 1 / -1;
+    }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
     .footer {
       text-align: center;
-      padding: 2rem;
+      padding: 2.5rem 2rem;
       color: var(--text-muted);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      border-top: 1px solid var(--border);
-      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border-top: var(--border-thick);
+      margin-top: 1.5rem;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '→';
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent-neon);
     }
 
     .footer a {
-      color: var(--text-secondary);
+      color: var(--accent-neon);
       text-decoration: none;
+      border-bottom: 1px solid var(--accent-neon);
+      padding-bottom: 1px;
     }
 
-    /* ── RESPONSIVE ── */
+    .footer a:hover {
+      color: var(--text-white);
+      border-color: var(--text-white);
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
     @media (max-width: 768px) {
-      .chart-grid { grid-template-columns: 1fr; }
-      .header h1 { font-size: 1.4rem; }
+      .chart-grid, .dist-grid { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .header h1 { font-size: 1.8rem; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .drop-area { padding: 2rem; }
+      .drop-area { padding: 2.5rem 2rem; }
+      .dashboard { padding: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-bar { grid-template-columns: 1fr; }
+      .header h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="scanline"></div>
 
   <div class="header">
-    <h1>POLPO <span>//</span> ANALYTICS</h1>
-    <div class="subtitle">instagram growth intelligence · dashboard v1 · -bynd</div>
+    <div class="header-left">
+      <h1>POLPO <span class="slash">//</span> Analytics</h1>
+      <div class="subtitle">[instagram growth intelligence] → dashboard v1 → -bynd</div>
+    </div>
+    <div class="header-badge">SNCTVM TOOLS</div>
   </div>
 
   <!-- UPLOAD -->
   <div class="upload-zone" id="uploadZone">
     <div class="drop-area" id="dropArea">
-      <div class="icon">📊</div>
-      <div class="label">Suelta tu <strong>stats.csv</strong> aquí</div>
-      <div class="hint">o haz click para seleccionar · generado con gen_stats.py</div>
+      <span class="icon">↓</span>
+      <div class="label-text">Suelta tu <strong>stats.csv</strong> aquí</div>
+      <div class="hint">click para seleccionar → generado con gen_stats.py</div>
       <input type="file" id="fileInput" accept=".csv">
     </div>
   </div>
 
   <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
+
+    <div class="section-title">[RESUMEN]</div>
     <div class="stats-bar" id="statsBar"></div>
 
+    <div class="section-title">[ORIGEN POR TIPO]</div>
     <div class="chart-grid">
       <div class="chart-card">
         <h3><span class="badge mutual-badge">MUTUALS</span> ORIGEN</h3>
@@ -319,32 +527,48 @@
           <canvas id="pieMutuals"></canvas>
         </div>
       </div>
-
       <div class="chart-card">
         <h3><span class="badge ghost-badge">NO MUTUALS</span> ORIGEN</h3>
         <div class="chart-container pie">
           <canvas id="pieGhosts"></canvas>
         </div>
       </div>
+    </div>
 
+    <div class="section-title">[RATIO EN EL TIEMPO]</div>
+    <div class="chart-grid">
       <div class="chart-card">
-        <h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO EN EL TIEMPO</h3>
+        <h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO</h3>
         <div class="chart-container">
           <canvas id="lineMutuals"></canvas>
         </div>
       </div>
-
       <div class="chart-card">
-        <h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO EN EL TIEMPO</h3>
+        <h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO</h3>
         <div class="chart-container">
           <canvas id="lineGhosts"></canvas>
         </div>
       </div>
+    </div>
 
-      <div class="chart-card full">
-        <h3>DISTRIBUCIÓN DE RATIO · <span class="badge mutual-badge">MUTUALS</span> vs <span class="badge ghost-badge">NO MUTUALS</span></h3>
+    <div class="section-title">[DISTRIBUCIONES DE RATIO]</div>
+    <div class="dist-grid">
+      <div class="chart-card">
+        <h3><span class="badge mutual-badge">MUTUALS</span> DISTRIBUCIÓN</h3>
         <div class="chart-container">
-          <canvas id="histRatio"></canvas>
+          <canvas id="histMutuals"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3><span class="badge ghost-badge">NO MUTUALS</span> DISTRIBUCIÓN</h3>
+        <div class="chart-container">
+          <canvas id="histGhosts"></canvas>
+        </div>
+      </div>
+      <div class="chart-card full-polygon">
+        <h3><span class="badge compare-badge">COMPARATIVO</span> POLÍGONO DE FRECUENCIAS → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3>
+        <div class="chart-container">
+          <canvas id="polyCompare"></canvas>
         </div>
       </div>
     </div>
@@ -355,28 +579,34 @@
   </div>
 
 <script>
-// ── PALETTE ──
+// ══════════════════════════════════════════
+// SNCTVM PALETTE
+// ══════════════════════════════════════════
 const PALETTE = [
-  '#00e5a0','#5e8eff','#ff3d6e','#ffaa2e','#c77dff',
-  '#00d4ff','#ff6b9d','#7bed9f','#ffa502','#a29bfe',
-  '#fd79a8','#00cec9','#e17055','#6c5ce7','#55efc4'
+  '#E8FF00', '#FF3366', '#00D9FF', '#000000', '#737373',
+  '#B8CC00', '#CC2952', '#00AED4', '#333333', '#999999',
+  '#D4E600', '#FF6688', '#33E0FF', '#555555', '#AAAAAA'
 ];
 
-const MUTUAL_COLOR = '#00e5a0';
-const MUTUAL_COLOR_A = '#00e5a066';
-const GHOST_COLOR = '#ff3d6e';
-const GHOST_COLOR_A = '#ff3d6e66';
+const MUTUAL_COLOR = '#E8FF00';
+const MUTUAL_COLOR_A = '#E8FF0055';
+const GHOST_COLOR = '#FF3366';
+const GHOST_COLOR_A = '#FF336655';
 
-// ── CHART DEFAULTS ──
-Chart.defaults.color = '#6e6e82';
-Chart.defaults.borderColor = '#1e1e2e';
+// ══════════════════════════════════════════
+// CHART DEFAULTS - SNCTVM style
+// ══════════════════════════════════════════
+Chart.defaults.color = '#737373';
+Chart.defaults.borderColor = '#D4D4D4';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
-Chart.defaults.font.size = 11;
+Chart.defaults.font.size = 10;
 Chart.defaults.plugins.legend.labels.padding = 14;
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.pointStyle = 'rectRounded';
 
-// ── FILE HANDLING ──
+// ══════════════════════════════════════════
+// FILE HANDLING
+// ══════════════════════════════════════════
 const fileInput = document.getElementById('fileInput');
 const dropArea = document.getElementById('dropArea');
 
@@ -417,7 +647,6 @@ function parseCSV(text) {
     if (vals.length < headers.length) continue;
     const obj = {};
     headers.forEach((h, idx) => obj[h] = vals[idx]?.trim() || '');
-    // parse types
     obj.mutual = obj.mutual === 'True' || obj.mutual === 'true' || obj.mutual === '1';
     obj.profile_followers = parseInt(obj.profile_followers) || 0;
     obj.profile_following = parseInt(obj.profile_following) || 0;
@@ -428,7 +657,9 @@ function parseCSV(text) {
   return rows;
 }
 
-// ── BUILD DASHBOARD ──
+// ══════════════════════════════════════════
+// BUILD DASHBOARD
+// ══════════════════════════════════════════
 function buildDashboard(data) {
   document.getElementById('uploadZone').style.display = 'none';
   document.getElementById('dashboard').classList.add('visible');
@@ -439,7 +670,6 @@ function buildDashboard(data) {
   const totalHistoric = data.length;
   const cancelled = data.filter(d => d.status === 'request_cancelled').length;
 
-  // avg ratio
   const avgRatioMutual = mutuals.length
     ? (mutuals.reduce((s, d) => s + d.profile_ratio, 0) / mutuals.length).toFixed(2)
     : '—';
@@ -460,25 +690,29 @@ function buildDashboard(data) {
     { label: 'Orígenes', value: new Set(active.map(d => d.origen)).size, cls: 'info' },
   ];
   statsBar.innerHTML = stats.map(s => `
-    <div class="stat-card">
+    <div class="stat-card ${s.cls}">
       <div class="stat-label">${s.label}</div>
-      <div class="stat-value ${s.cls}">${s.value}</div>
+      <div class="stat-value">${s.value}</div>
     </div>
   `).join('');
 
-  // ── PIE: MUTUALS ORIGEN ──
+  // Pies
   buildPie('pieMutuals', mutuals);
-  // ── PIE: GHOSTS ORIGEN ──
   buildPie('pieGhosts', ghosts);
-  // ── LINE: MUTUALS RATIO ──
+  // Lines
   buildLine('lineMutuals', mutuals, MUTUAL_COLOR, MUTUAL_COLOR_A);
-  // ── LINE: GHOSTS RATIO ──
   buildLine('lineGhosts', ghosts, GHOST_COLOR, GHOST_COLOR_A);
-  // ── HISTOGRAM ──
-  buildHistogram('histRatio', mutuals, ghosts);
+  // Distributions - separate histograms
+  const binData = buildBinData(mutuals, ghosts);
+  buildSingleHist('histMutuals', binData.labels, binData.mutualBins, MUTUAL_COLOR, MUTUAL_COLOR_A, 'Mutuals');
+  buildSingleHist('histGhosts', binData.labels, binData.ghostBins, GHOST_COLOR, GHOST_COLOR_A, 'No Mutuals');
+  // Frequency polygon - comparative
+  buildPolygon('polyCompare', binData);
 }
 
-// ── PIE CHART ──
+// ══════════════════════════════════════════
+// PIE CHART
+// ══════════════════════════════════════════
 function buildPie(canvasId, subset) {
   const counts = {};
   subset.forEach(d => {
@@ -497,26 +731,37 @@ function buildPie(canvasId, subset) {
       datasets: [{
         data: values,
         backgroundColor: colors,
-        borderColor: '#111118',
+        borderColor: '#000000',
         borderWidth: 2,
-        hoverBorderColor: '#e0e0e8',
-        hoverBorderWidth: 2
+        hoverBorderColor: '#E8FF00',
+        hoverBorderWidth: 3
       }]
     },
     options: {
       responsive: true,
-      cutout: '55%',
+      cutout: '58%',
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { padding: 12, font: { size: 10 } }
+          labels: {
+            padding: 10,
+            font: { size: 9, family: "'JetBrains Mono', monospace" },
+            color: '#737373'
+          }
         },
         tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: '#E8FF00',
+          borderWidth: 2,
+          titleFont: { family: "'EB Garamond', serif", size: 13 },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
           callbacks: {
             label: ctx => {
               const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
               const pct = ((ctx.raw / total) * 100).toFixed(1);
-              return ` ${ctx.raw} (${pct}%)`;
+              return ` ${ctx.raw} → ${pct}%`;
             }
           }
         }
@@ -525,9 +770,10 @@ function buildPie(canvasId, subset) {
   });
 }
 
-// ── LINE CHART ──
+// ══════════════════════════════════════════
+// LINE CHART
+// ══════════════════════════════════════════
 function buildLine(canvasId, subset, color, colorA) {
-  // sort by followed_at date
   const sorted = [...subset]
     .filter(d => d.followed_at && d.profile_ratio > 0)
     .sort((a, b) => a.followed_at.localeCompare(b.followed_at));
@@ -544,14 +790,17 @@ function buildLine(canvasId, subset, color, colorA) {
     data: {
       labels,
       datasets: [{
-        label: 'Ratio (followers/following)',
+        label: 'Ratio',
         data: ratios,
         borderColor: color,
         backgroundColor: colorA,
         fill: true,
         tension: 0.3,
-        pointRadius: sorted.length > 50 ? 0 : 3,
+        pointRadius: sorted.length > 50 ? 0 : 2,
         pointHoverRadius: 5,
+        pointBackgroundColor: color,
+        pointBorderColor: '#000000',
+        pointBorderWidth: 1,
         borderWidth: 2
       }]
     },
@@ -560,23 +809,32 @@ function buildLine(canvasId, subset, color, colorA) {
       interaction: { mode: 'index', intersect: false },
       scales: {
         x: {
-          grid: { color: '#1a1a28' },
-          ticks: { maxTicksLimit: 12, font: { size: 9 } }
+          grid: { color: '#E8E8E8' },
+          ticks: { maxTicksLimit: 12, font: { size: 8 }, color: '#737373' },
+          border: { color: '#000000', width: 2 }
         },
         y: {
-          grid: { color: '#1a1a28' },
-          title: { display: true, text: 'ratio', font: { size: 10 } }
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'RATIO', font: { size: 9, family: "'JetBrains Mono', monospace" }, color: '#737373' },
+          border: { color: '#000000', width: 2 }
         }
       },
       plugins: {
         legend: { display: false },
         tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: color,
+          borderWidth: 2,
+          titleFont: { family: "'EB Garamond', serif", size: 13 },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
           callbacks: {
             title: (items) => {
               const idx = items[0].dataIndex;
               return sorted[idx].username;
             },
-            label: ctx => ` ratio: ${ctx.raw} · ${sorted[ctx.dataIndex].profile_followers}/${sorted[ctx.dataIndex].profile_following}`
+            label: ctx => ` ratio: ${ctx.raw} → ${sorted[ctx.dataIndex].profile_followers}/${sorted[ctx.dataIndex].profile_following}`
           }
         }
       }
@@ -584,80 +842,193 @@ function buildLine(canvasId, subset, color, colorA) {
   });
 }
 
-// ── HISTOGRAM ──
-function buildHistogram(canvasId, mutuals, ghosts) {
-  // build bins from 0 to max ratio
+// ══════════════════════════════════════════
+// SHARED BIN COMPUTATION
+// ══════════════════════════════════════════
+function buildBinData(mutuals, ghosts) {
   const allRatios = [...mutuals, ...ghosts]
     .map(d => d.profile_ratio)
     .filter(r => r > 0);
 
-  if (allRatios.length === 0) {
-    document.getElementById(canvasId).parentElement.innerHTML =
-      '<p style="color:#3e3e52;text-align:center;padding:2rem;">Sin datos de ratio para histograma</p>';
-    return;
-  }
+  if (allRatios.length === 0) return { labels: [], mutualBins: [], ghostBins: [], midpoints: [] };
 
   const maxR = Math.min(Math.ceil(Math.max(...allRatios)), 20);
   const binSize = maxR <= 5 ? 0.5 : 1;
   const binCount = Math.ceil(maxR / binSize) + 1;
 
   const binLabels = [];
+  const midpoints = [];
   const mutualBins = new Array(binCount).fill(0);
   const ghostBins = new Array(binCount).fill(0);
 
   for (let i = 0; i < binCount; i++) {
-    const lo = (i * binSize).toFixed(1);
-    const hi = ((i + 1) * binSize).toFixed(1);
-    binLabels.push(`${lo}-${hi}`);
+    const lo = i * binSize;
+    const hi = (i + 1) * binSize;
+    binLabels.push(`${lo.toFixed(1)}-${hi.toFixed(1)}`);
+    midpoints.push(((lo + hi) / 2).toFixed(2));
   }
 
   function toBin(ratio) {
-    const idx = Math.min(Math.floor(ratio / binSize), binCount - 1);
-    return idx;
+    return Math.min(Math.floor(ratio / binSize), binCount - 1);
   }
 
   mutuals.filter(d => d.profile_ratio > 0).forEach(d => mutualBins[toBin(d.profile_ratio)]++);
   ghosts.filter(d => d.profile_ratio > 0).forEach(d => ghostBins[toBin(d.profile_ratio)]++);
 
+  return { labels: binLabels, mutualBins, ghostBins, midpoints };
+}
+
+// ══════════════════════════════════════════
+// SINGLE HISTOGRAM
+// ══════════════════════════════════════════
+function buildSingleHist(canvasId, labels, bins, color, colorA, label) {
+  if (labels.length === 0) {
+    document.getElementById(canvasId).parentElement.innerHTML =
+      '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
+    return;
+  }
+
   new Chart(document.getElementById(canvasId), {
     type: 'bar',
     data: {
-      labels: binLabels,
-      datasets: [
-        {
-          label: 'Mutuals',
-          data: mutualBins,
-          backgroundColor: MUTUAL_COLOR_A,
-          borderColor: MUTUAL_COLOR,
-          borderWidth: 1
-        },
-        {
-          label: 'No Mutuals',
-          data: ghostBins,
-          backgroundColor: GHOST_COLOR_A,
-          borderColor: GHOST_COLOR,
-          borderWidth: 1
-        }
-      ]
+      labels,
+      datasets: [{
+        label,
+        data: bins,
+        backgroundColor: colorA,
+        borderColor: color,
+        borderWidth: 2,
+        borderRadius: 0,
+        barPercentage: 1.0,
+        categoryPercentage: 0.92
+      }]
     },
     options: {
       responsive: true,
       scales: {
         x: {
-          grid: { color: '#1a1a28' },
-          title: { display: true, text: 'ratio (followers/following)', font: { size: 10 } },
-          ticks: { font: { size: 9 }, maxRotation: 45 }
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'RATIO', font: { size: 9, family: "'JetBrains Mono'" }, color: '#737373' },
+          ticks: { font: { size: 8 }, maxRotation: 45, color: '#737373' },
+          border: { color: '#000000', width: 2 }
         },
         y: {
-          grid: { color: '#1a1a28' },
-          title: { display: true, text: 'cantidad', font: { size: 10 } },
-          beginAtZero: true
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'FRECUENCIA', font: { size: 9, family: "'JetBrains Mono'" }, color: '#737373' },
+          beginAtZero: true,
+          border: { color: '#000000', width: 2 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: color,
+          borderWidth: 2,
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 }
+        }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// FREQUENCY POLYGON (COMPARATIVE)
+// ══════════════════════════════════════════
+function buildPolygon(canvasId, binData) {
+  if (binData.labels.length === 0) {
+    document.getElementById(canvasId).parentElement.innerHTML =
+      '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS PARA POLÍGONO]</p>';
+    return;
+  }
+
+  new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: {
+      labels: binData.midpoints,
+      datasets: [
+        {
+          label: 'MUTUALS',
+          data: binData.mutualBins,
+          borderColor: MUTUAL_COLOR,
+          backgroundColor: MUTUAL_COLOR_A,
+          fill: true,
+          tension: 0.25,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: MUTUAL_COLOR,
+          pointBorderColor: '#000000',
+          pointBorderWidth: 2,
+          borderWidth: 3
+        },
+        {
+          label: 'NO MUTUALS',
+          data: binData.ghostBins,
+          borderColor: GHOST_COLOR,
+          backgroundColor: GHOST_COLOR_A,
+          fill: true,
+          tension: 0.25,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: GHOST_COLOR,
+          pointBorderColor: '#000000',
+          pointBorderWidth: 2,
+          borderWidth: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: {
+            display: true,
+            text: 'MARCA DE CLASE (RATIO)',
+            font: { size: 9, family: "'JetBrains Mono'" },
+            color: '#737373'
+          },
+          ticks: { font: { size: 8 }, maxRotation: 45, color: '#737373' },
+          border: { color: '#000000', width: 2 }
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: {
+            display: true,
+            text: 'FRECUENCIA',
+            font: { size: 9, family: "'JetBrains Mono'" },
+            color: '#737373'
+          },
+          beginAtZero: true,
+          border: { color: '#000000', width: 2 }
         }
       },
       plugins: {
         legend: {
           position: 'top',
-          labels: { font: { size: 10 } }
+          labels: {
+            font: { size: 10, family: "'JetBrains Mono', monospace", weight: '600' },
+            padding: 20,
+            color: '#737373',
+            usePointStyle: true,
+            pointStyle: 'rect'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '700' },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
+          callbacks: {
+            title: (items) => `RATIO ≈ ${items[0].label}`,
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} usuarios`
+          }
         }
       }
     }
