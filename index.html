@@ -583,6 +583,22 @@
       </div>
     </div>
 
+    <div class="section-title">[RATIO POR ORIGEN]</div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3><span class="badge compare-badge">COMPARATIVO</span> RATIO PROMEDIO POR ORIGEN</h3>
+        <div class="chart-container" style="position:relative; min-height:250px;">
+          <canvas id="avgRatioByOrigin"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3><span class="badge compare-badge">COMPARATIVO</span> RATIO MÁXIMO POR ORIGEN <span style="font-size:0.5rem;color:#737373;font-family:var(--font-mono);">· incluye @user</span></h3>
+        <div class="chart-container" style="position:relative; min-height:250px;">
+          <canvas id="maxRatioByOrigin"></canvas>
+        </div>
+      </div>
+    </div>
+
     <div class="footer">
       POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a>
     </div>
@@ -720,6 +736,9 @@ function buildDashboard(data) {
   buildPolygon('polyCompare', binData);
   // Mutuality rate by origin
   buildMutualityRate('mutualityRate', active);
+  // Avg and Max ratio by origin
+  buildAvgRatioByOrigin('avgRatioByOrigin', active);
+  buildMaxRatioByOrigin('maxRatioByOrigin', active);
 }
 
 // ══════════════════════════════════════════
@@ -1048,8 +1067,225 @@ function buildPolygon(canvasId, binData) {
 }
 
 // ══════════════════════════════════════════
-// MUTUALITY RATE BY ORIGIN
+// AVG RATIO BY ORIGIN
 // ══════════════════════════════════════════
+function buildAvgRatioByOrigin(canvasId, active) {
+  const byOrigen = {};
+  active.forEach(d => {
+    const o = d.origen || 'unknown';
+    if (!byOrigen[o]) byOrigen[o] = { sum: 0, count: 0 };
+    if (d.profile_ratio > 0) {
+      byOrigen[o].sum += d.profile_ratio;
+      byOrigen[o].count++;
+    }
+  });
+
+  const origins = Object.keys(byOrigen)
+    .map(o => ({
+      name: o,
+      avg: byOrigen[o].count > 0 ? byOrigen[o].sum / byOrigen[o].count : 0,
+      count: byOrigen[o].count
+    }))
+    .filter(o => o.count > 0)
+    .sort((a, b) => b.avg - a.avg);
+
+  if (origins.length === 0) {
+    document.getElementById(canvasId).parentElement.innerHTML =
+      '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
+    return;
+  }
+
+  const canvas = document.getElementById(canvasId);
+  const barHeight = 38;
+  const calcHeight = Math.max(250, origins.length * barHeight + 80);
+  canvas.parentElement.style.minHeight = calcHeight + 'px';
+  canvas.style.height = calcHeight + 'px';
+
+  const labels = origins.map(o => `@${o.name}`);
+  const avgs = origins.map(o => parseFloat(o.avg.toFixed(3)));
+  const colors = origins.map((_, i) => PALETTE[i % PALETTE.length]);
+  const borderColors = origins.map(c => '#000000');
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ratio Promedio',
+        data: avgs,
+        backgroundColor: colors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        borderRadius: 0,
+        barPercentage: 0.72,
+        categoryPercentage: 0.88
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: {
+            display: true,
+            text: 'RATIO PROMEDIO',
+            font: { size: 9, family: "'JetBrains Mono'" },
+            color: '#737373'
+          },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000000', width: 2 },
+          beginAtZero: true
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            font: { size: 10, family: "'JetBrains Mono', monospace", weight: '500' },
+            color: '#000000',
+            padding: 8
+          },
+          border: { color: '#000000', width: 2 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '700' },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
+          callbacks: {
+            label: ctx => {
+              const o = origins[ctx.dataIndex];
+              return ` avg ratio: ${o.avg.toFixed(3)}  (n=${o.count})`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// MAX RATIO BY ORIGIN (including username)
+// ══════════════════════════════════════════
+function buildMaxRatioByOrigin(canvasId, active) {
+  const byOrigen = {};
+  active.forEach(d => {
+    const o = d.origen || 'unknown';
+    if (!byOrigen[o]) byOrigen[o] = { max: 0, user: '—', count: 0 };
+    if (d.profile_ratio > 0) {
+      byOrigen[o].count++;
+      if (d.profile_ratio > byOrigen[o].max) {
+        byOrigen[o].max = d.profile_ratio;
+        byOrigen[o].user = d.username || d.user || '—';
+      }
+    }
+  });
+
+  const origins = Object.keys(byOrigen)
+    .map(o => ({
+      name: o,
+      max: byOrigen[o].max,
+      user: byOrigen[o].user,
+      count: byOrigen[o].count
+    }))
+    .filter(o => o.count > 0)
+    .sort((a, b) => b.max - a.max);
+
+  if (origins.length === 0) {
+    document.getElementById(canvasId).parentElement.innerHTML =
+      '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
+    return;
+  }
+
+  const canvas = document.getElementById(canvasId);
+  const barHeight = 38;
+  const calcHeight = Math.max(250, origins.length * barHeight + 80);
+  canvas.parentElement.style.minHeight = calcHeight + 'px';
+  canvas.style.height = calcHeight + 'px';
+
+  const labels = origins.map(o => `@${o.name}`);
+  const maxes = origins.map(o => parseFloat(o.max.toFixed(3)));
+  // Use accent-pink for max (highlights extremes)
+  const colors = origins.map((_, i) => {
+    const intensity = 1 - (i / origins.length) * 0.55;
+    return `rgba(255, 51, 102, ${intensity.toFixed(2)})`;
+  });
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ratio Máximo',
+        data: maxes,
+        backgroundColor: colors,
+        borderColor: '#000000',
+        borderWidth: 2,
+        borderRadius: 0,
+        barPercentage: 0.72,
+        categoryPercentage: 0.88
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: {
+            display: true,
+            text: 'RATIO MÁXIMO',
+            font: { size: 9, family: "'JetBrains Mono'" },
+            color: '#737373'
+          },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000000', width: 2 },
+          beginAtZero: true
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            font: { size: 10, family: "'JetBrains Mono', monospace", weight: '500' },
+            color: '#000000',
+            padding: 8
+          },
+          border: { color: '#000000', width: 2 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0A0A0A',
+          titleColor: '#FAFAF9',
+          bodyColor: '#FAFAF9',
+          borderColor: '#FF3366',
+          borderWidth: 2,
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '700' },
+          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
+          callbacks: {
+            label: ctx => {
+              const o = origins[ctx.dataIndex];
+              return ` max ratio: ${o.max.toFixed(3)}`;
+            },
+            afterLabel: ctx => {
+              const o = origins[ctx.dataIndex];
+              return ` @${o.user}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+
 function buildMutualityRate(canvasId, active) {
   // Group by origen
   const byOrigen = {};
