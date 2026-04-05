@@ -539,52 +539,35 @@
     <div class="chart-grid">
       <div class="chart-card">
         <h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO</h3>
-        <div class="chart-container" style="position:relative; height:260px;">
+        <div class="chart-container">
           <canvas id="lineMutuals"></canvas>
         </div>
       </div>
       <div class="chart-card">
         <h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO</h3>
-        <div class="chart-container" style="position:relative; height:260px;">
+        <div class="chart-container">
           <canvas id="lineGhosts"></canvas>
         </div>
       </div>
     </div>
 
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-      <div class="section-title" style="margin-bottom:0; flex:1;">[DISTRIBUCIONES DE RATIO]</div>
-      <button id="distToggle" onclick="toggleDistMode()" style="
-        font-family: var(--font-mono);
-        font-size: 0.6rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        background: var(--bg-deep);
-        color: var(--accent-neon);
-        border: 2px solid var(--accent-neon);
-        padding: 0.3rem 0.9rem;
-        cursor: pointer;
-        box-shadow: 2px 2px 0px var(--accent-neon);
-        flex-shrink: 0;
-        margin-left: 1rem;
-      ">ABSOLUTO → %</button>
-    </div>
+    <div class="section-title">[DISTRIBUCIONES DE RATIO]</div>
     <div class="dist-grid">
       <div class="chart-card">
         <h3><span class="badge mutual-badge">MUTUALS</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container" style="position:relative; height:260px;">
+        <div class="chart-container">
           <canvas id="histMutuals"></canvas>
         </div>
       </div>
       <div class="chart-card">
         <h3><span class="badge ghost-badge">NO MUTUALS</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container" style="position:relative; height:260px;">
+        <div class="chart-container">
           <canvas id="histGhosts"></canvas>
         </div>
       </div>
       <div class="chart-card full-polygon">
         <h3><span class="badge compare-badge">COMPARATIVO</span> POLÍGONO DE FRECUENCIAS → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3>
-        <div class="chart-container" style="position:relative; height:280px;">
+        <div class="chart-container">
           <canvas id="polyCompare"></canvas>
         </div>
       </div>
@@ -614,12 +597,6 @@
           <canvas id="maxRatioByOrigin"></canvas>
         </div>
       </div>
-      <div class="chart-card full">
-        <h3><span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> <span style="margin-left:0.3rem;">MAX RATIO POR ORIGEN → COMPARATIVO</span></h3>
-        <div class="chart-container" style="position:relative; height:300px;">
-          <canvas id="maxRatioCompare"></canvas>
-        </div>
-      </div>
     </div>
 
     <div class="footer">
@@ -641,10 +618,6 @@ const MUTUAL_COLOR = '#E8FF00';
 const MUTUAL_COLOR_A = '#E8FF0055';
 const GHOST_COLOR = '#FF3366';
 const GHOST_COLOR_A = '#FF336655';
-
-// Global state for distribution toggle
-let histMutualsChart, histGhostsChart, polyChart;
-let _binData, _mutualTotal, _ghostTotal, _distMode = 'abs';
 
 // ══════════════════════════════════════════
 // CHART DEFAULTS - SNCTVM style
@@ -757,21 +730,15 @@ function buildDashboard(data) {
   buildLine('lineGhosts', ghosts, GHOST_COLOR, GHOST_COLOR_A);
   // Distributions - separate histograms
   const binData = buildBinData(mutuals, ghosts);
-  _binData = binData;
-  _mutualTotal = mutuals.filter(d => d.profile_ratio > 0).length;
-  _ghostTotal  = ghosts.filter(d => d.profile_ratio > 0).length;
-  _distMode = 'abs';
-  histMutualsChart = buildSingleHist('histMutuals', binData.labels, binData.mutualBins, MUTUAL_COLOR, MUTUAL_COLOR_A, 'Mutuals');
-  histGhostsChart  = buildSingleHist('histGhosts',  binData.labels, binData.ghostBins,  GHOST_COLOR,  GHOST_COLOR_A,  'No Mutuals');
+  buildSingleHist('histMutuals', binData.labels, binData.mutualBins, MUTUAL_COLOR, MUTUAL_COLOR_A, 'Mutuals');
+  buildSingleHist('histGhosts', binData.labels, binData.ghostBins, GHOST_COLOR, GHOST_COLOR_A, 'No Mutuals');
   // Frequency polygon - comparative
-  polyChart = buildPolygon('polyCompare', binData);
+  buildPolygon('polyCompare', binData);
   // Mutuality rate by origin
   buildMutualityRate('mutualityRate', active);
   // Avg and Max ratio by origin
   buildAvgRatioByOrigin('avgRatioByOrigin', active);
   buildMaxRatioByOrigin('maxRatioByOrigin', active);
-  // Max ratio M vs NM comparative
-  buildMaxRatioCompare('maxRatioCompare', mutuals, ghosts);
 }
 
 // ══════════════════════════════════════════
@@ -870,8 +837,11 @@ function buildLine(canvasId, subset, color, colorA) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          ticks: { maxTicksLimit: 12, font: { size: 8 }, color: '#737373' },
           border: { color: '#000000', width: 2 }
         },
         y: {
@@ -946,10 +916,10 @@ function buildSingleHist(canvasId, labels, bins, color, colorA, label) {
   if (labels.length === 0) {
     document.getElementById(canvasId).parentElement.innerHTML =
       '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
-    return null;
+    return;
   }
 
-  return new Chart(document.getElementById(canvasId), {
+  new Chart(document.getElementById(canvasId), {
     type: 'bar',
     data: {
       labels,
@@ -966,7 +936,6 @@ function buildSingleHist(canvasId, labels, bins, color, colorA, label) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
       scales: {
         x: {
           grid: { color: '#E8E8E8' },
@@ -1003,10 +972,10 @@ function buildPolygon(canvasId, binData) {
   if (binData.labels.length === 0) {
     document.getElementById(canvasId).parentElement.innerHTML =
       '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS PARA POLÍGONO]</p>';
-    return null;
+    return;
   }
 
-  return new Chart(document.getElementById(canvasId), {
+  new Chart(document.getElementById(canvasId), {
     type: 'line',
     data: {
       labels: binData.midpoints,
@@ -1043,8 +1012,13 @@ function buildPolygon(canvasId, binData) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: {
+            display: true,
+            text: 'MARCA DE CLASE (RATIO)',
             font: { size: 9, family: "'JetBrains Mono'" },
             color: '#737373'
           },
@@ -1085,161 +1059,6 @@ function buildPolygon(canvasId, binData) {
           callbacks: {
             title: (items) => `RATIO ≈ ${items[0].label}`,
             label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} usuarios`
-          }
-        }
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════
-// DISTRIBUTION TOGGLE (ABS ↔ %)
-// ══════════════════════════════════════════
-function toggleDistMode() {
-  if (!histMutualsChart || !histGhostsChart || !polyChart) return;
-
-  _distMode = _distMode === 'abs' ? 'pct' : 'abs';
-  const isPct = _distMode === 'pct';
-  const btn = document.getElementById('distToggle');
-  btn.textContent = isPct ? '% → ABSOLUTO' : 'ABSOLUTO → %';
-  btn.style.background  = isPct ? 'var(--accent-neon)' : 'var(--bg-deep)';
-  btn.style.color       = isPct ? 'var(--text-black)'  : 'var(--accent-neon)';
-  btn.style.borderColor = isPct ? '#000000'            : 'var(--accent-neon)';
-  btn.style.boxShadow   = isPct ? '2px 2px 0px #000000' : '2px 2px 0px var(--accent-neon)';
-
-  const yLabel = isPct ? '% DEL GRUPO' : 'FRECUENCIA';
-  const toPct  = (bins, total) =>
-    bins.map(v => total > 0 ? parseFloat((v / total * 100).toFixed(2)) : 0);
-
-  // Hist mutuals
-  histMutualsChart.data.datasets[0].data = isPct ? toPct(_binData.mutualBins, _mutualTotal) : _binData.mutualBins;
-  histMutualsChart.options.scales.y.title.text = yLabel;
-  histMutualsChart.options.plugins.tooltip.callbacks.label =
-    isPct ? ctx => ` ${ctx.raw}% del grupo` : ctx => ` ${ctx.raw} usuarios`;
-  histMutualsChart.update();
-
-  // Hist ghosts
-  histGhostsChart.data.datasets[0].data = isPct ? toPct(_binData.ghostBins, _ghostTotal) : _binData.ghostBins;
-  histGhostsChart.options.scales.y.title.text = yLabel;
-  histGhostsChart.options.plugins.tooltip.callbacks.label =
-    isPct ? ctx => ` ${ctx.raw}% del grupo` : ctx => ` ${ctx.raw} usuarios`;
-  histGhostsChart.update();
-
-  // Polygon
-  polyChart.data.datasets[0].data = isPct ? toPct(_binData.mutualBins, _mutualTotal) : _binData.mutualBins;
-  polyChart.data.datasets[1].data = isPct ? toPct(_binData.ghostBins,  _ghostTotal)  : _binData.ghostBins;
-  polyChart.options.scales.y.title.text = yLabel;
-  polyChart.options.plugins.tooltip.callbacks.label =
-    isPct ? ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` : ctx => ` ${ctx.dataset.label}: ${ctx.raw} usuarios`;
-  polyChart.update();
-}
-
-// ══════════════════════════════════════════
-// MAX RATIO MUTUAL vs NO MUTUAL BY ORIGIN
-// ══════════════════════════════════════════
-function buildMaxRatioCompare(canvasId, mutuals, ghosts) {
-  const mMap = {}, gMap = {};
-
-  mutuals.forEach(d => {
-    if (d.profile_ratio <= 0) return;
-    const o = d.origen || 'unknown';
-    if (!mMap[o] || d.profile_ratio > mMap[o].max)
-      mMap[o] = { max: d.profile_ratio, user: d.username || '—' };
-  });
-  ghosts.forEach(d => {
-    if (d.profile_ratio <= 0) return;
-    const o = d.origen || 'unknown';
-    if (!gMap[o] || d.profile_ratio > gMap[o].max)
-      gMap[o] = { max: d.profile_ratio, user: d.username || '—' };
-  });
-
-  const allOrigins = [...new Set([...Object.keys(mMap), ...Object.keys(gMap)])]
-    .sort((a, b) => {
-      const aMax = Math.max(mMap[a]?.max || 0, gMap[a]?.max || 0);
-      const bMax = Math.max(mMap[b]?.max || 0, gMap[b]?.max || 0);
-      return bMax - aMax;
-    });
-
-  if (allOrigins.length === 0) {
-    document.getElementById(canvasId).parentElement.innerHTML =
-      '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
-    return;
-  }
-
-  new Chart(document.getElementById(canvasId), {
-    type: 'bar',
-    data: {
-      labels: allOrigins.map(o => `@${o}`),
-      datasets: [
-        {
-          label: 'MUTUALS',
-          data: allOrigins.map(o => mMap[o] ? parseFloat(mMap[o].max.toFixed(3)) : 0),
-          backgroundColor: MUTUAL_COLOR,
-          borderColor: '#000000',
-          borderWidth: 2,
-          borderRadius: 0,
-          barPercentage: 0.7,
-          categoryPercentage: 0.82
-        },
-        {
-          label: 'NO MUTUALS',
-          data: allOrigins.map(o => gMap[o] ? parseFloat(gMap[o].max.toFixed(3)) : 0),
-          backgroundColor: GHOST_COLOR,
-          borderColor: '#000000',
-          borderWidth: 2,
-          borderRadius: 0,
-          barPercentage: 0.7,
-          categoryPercentage: 0.82
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: {
-          grid: { color: '#E8E8E8' },
-          ticks: { font: { size: 9, family: "'JetBrains Mono', monospace", weight: '500' }, color: '#000000' },
-          border: { color: '#000000', width: 2 }
-        },
-        y: {
-          grid: { color: '#E8E8E8' },
-          title: { display: true, text: 'RATIO MÁXIMO', font: { size: 9, family: "'JetBrains Mono'" }, color: '#737373' },
-          beginAtZero: true,
-          ticks: { font: { size: 9 }, color: '#737373' },
-          border: { color: '#000000', width: 2 }
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            font: { size: 10, family: "'JetBrains Mono', monospace", weight: '600' },
-            padding: 20, color: '#737373',
-            usePointStyle: true, pointStyle: 'rect'
-          }
-        },
-        tooltip: {
-          backgroundColor: '#0A0A0A',
-          titleColor: '#FAFAF9',
-          bodyColor: '#FAFAF9',
-          borderColor: '#FFFFFF',
-          borderWidth: 2,
-          titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '700' },
-          bodyFont: { family: "'JetBrains Mono', monospace", size: 10 },
-          callbacks: {
-            title: items => `@${allOrigins[items[0].dataIndex]}`,
-            label: ctx => {
-              const o = allOrigins[ctx.dataIndex];
-              if (ctx.datasetIndex === 0) {
-                const m = mMap[o];
-                return m ? ` MUTUALS   max: ${m.max.toFixed(3)}  @${m.user}` : ' MUTUALS   —';
-              } else {
-                const g = gMap[o];
-                return g ? ` NO MUTUALS  max: ${g.max.toFixed(3)}  @${g.user}` : ' NO MUTUALS  —';
-              }
-            }
           }
         }
       }
