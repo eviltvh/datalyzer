@@ -440,6 +440,60 @@
     }
     .footer a:hover { color: var(--text-white); border-color: var(--text-white); }
 
+    /* ══════════ USERNAME QUALITY TABLE ══════════ */
+    .uq-table-wrap { overflow-x: auto; }
+    .uq-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .uq-table th {
+      text-align: left;
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      padding: 0.6rem 0.8rem;
+      border-bottom: var(--border-medium);
+    }
+    .uq-table td {
+      padding: 0.55rem 0.8rem;
+      border-bottom: var(--border-thin);
+      color: var(--text-black);
+      vertical-align: middle;
+    }
+    .uq-table tr:last-child td { border-bottom: none; }
+    .uq-rank {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 36px;
+      text-align: center;
+    }
+    .uq-user { font-weight: 600; }
+    .uq-score-bar {
+      height: 14px;
+      border: 2px solid #000;
+      position: relative;
+      min-width: 80px;
+    }
+    .uq-score-fill {
+      height: 100%;
+      transition: width 0.4s ease-out;
+    }
+    .uq-penalty {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+    .uq-mutual-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid #000;
+      vertical-align: middle;
+    }
+
     /* ══════════ RESPONSIVE ══════════ */
     @media (max-width: 768px) {
       .chart-grid, .dist-grid { grid-template-columns: 1fr; }
@@ -580,6 +634,14 @@
       <div class="chart-card full">
         <h3><span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> TOP RATIOS COMPARADOS → CON @USER</h3>
         <div class="chart-container fixed-h"><canvas id="versusBar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section-title">[USERNAME QUALITY — TOP 10]</div>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3><span class="badge mutual-badge">SCORE</span> MEJORES USERNAMES → menos letras + sin números/signos = mejor</h3>
+        <div class="uq-table-wrap" id="uqTable"></div>
       </div>
     </div>
 
@@ -747,6 +809,9 @@ function buildDashboard(data) {
 
   // Versus: max ratio mutual vs ghost
   buildVersus(mutuals, ghosts);
+
+  // Username quality top 10
+  buildUsernameQuality(active);
 }
 
 // ══════════════════════════════════════════
@@ -1179,6 +1244,82 @@ function buildVersus(mutuals, ghosts) {
       }
     }
   });
+}
+
+// ══════════════════════════════════════════
+// USERNAME QUALITY SCORE
+// ══════════════════════════════════════════
+// Score = 100 - penalties
+//   length penalty: 3 pts per character
+//   digit penalty:  5 pts per digit
+//   sign penalty:   5 pts per sign (. - _ etc)
+// Floor at 0. "abc" (3 chars, 0 signs, 0 digits) = 100 - 9 = 91
+// "p4bli.t0668" = 100 - 33(len) - 20(digits:4*5) - 5(dot) = 42
+function scoreUsername(username) {
+  const u = (username || '').toLowerCase();
+  const len = u.length;
+  const digits = (u.match(/[0-9]/g) || []).length;
+  const signs = (u.match(/[^a-z0-9]/g) || []).length;
+  const lenPenalty = len * 3;
+  const digitPenalty = digits * 5;
+  const signPenalty = signs * 5;
+  const total = lenPenalty + digitPenalty + signPenalty;
+  const score = Math.max(0, Math.min(100, 100 - total));
+  return { score, len, digits, signs, lenPenalty, digitPenalty, signPenalty };
+}
+
+function buildUsernameQuality(active) {
+  const seen = new Set();
+  const scored = [];
+  active.forEach(d => {
+    const u = d.username || d.user || '';
+    if (!u || seen.has(u)) return;
+    seen.add(u);
+    const s = scoreUsername(u);
+    scored.push({ username: u, mutual: d.mutual, origen: d.origen || '?', ...s });
+  });
+  scored.sort((a, b) => b.score - a.score);
+  const top = scored.slice(0, 10);
+
+  function barColor(score) {
+    if (score >= 70) return MUTUAL_COLOR;
+    if (score >= 40) return '#00D9FF';
+    if (score >= 20) return '#FF6688';
+    return GHOST_COLOR;
+  }
+
+  const container = document.getElementById('uqTable');
+  let html = `<table class="uq-table">
+    <tr>
+      <th>#</th>
+      <th>User</th>
+      <th>Score</th>
+      <th>Barra</th>
+      <th>Penalización</th>
+      <th>Tipo</th>
+    </tr>`;
+
+  top.forEach((t, i) => {
+    const color = barColor(t.score);
+    const mutDot = t.mutual
+      ? `<span class="uq-mutual-dot" style="background:${MUTUAL_COLOR};" title="mutual"></span>`
+      : `<span class="uq-mutual-dot" style="background:${GHOST_COLOR};" title="no mutual"></span>`;
+    html += `<tr>
+      <td class="uq-rank">${i + 1}</td>
+      <td class="uq-user">@${t.username}</td>
+      <td style="font-weight:700;color:${color};">${t.score}</td>
+      <td>
+        <div class="uq-score-bar">
+          <div class="uq-score-fill" style="width:${t.score}%;background:${color};"></div>
+        </div>
+      </td>
+      <td class="uq-penalty">len:−${t.lenPenalty} · dig:−${t.digitPenalty} · sig:−${t.signPenalty}</td>
+      <td>${mutDot}</td>
+    </tr>`;
+  });
+
+  html += '</table>';
+  container.innerHTML = html;
 }
 </script>
 </body>
