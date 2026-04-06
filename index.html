@@ -645,6 +645,14 @@
       </div>
     </div>
 
+    <div class="section-title">[CORRELACIÓN — USERNAME SCORE vs RATIO]</div>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3><span class="badge compare-badge">SCATTER</span> ¿MEJOR USERNAME = MEJOR RATIO? → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> <span style="font-size:0.5rem;color:#737373;font-family:var(--font-mono);">· hover para @user</span></h3>
+        <div class="chart-container" style="height:420px;"><canvas id="scatterUqRatio"></canvas></div>
+      </div>
+    </div>
+
     <div class="footer">
       POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a>
     </div>
@@ -812,6 +820,9 @@ function buildDashboard(data) {
 
   // Username quality top 10
   buildUsernameQuality(active);
+
+  // Scatter: username score vs ratio
+  buildUqScatter(active);
 }
 
 // ══════════════════════════════════════════
@@ -1320,6 +1331,119 @@ function buildUsernameQuality(active) {
 
   html += '</table>';
   container.innerHTML = html;
+}
+
+// ══════════════════════════════════════════
+// SCATTER: USERNAME SCORE vs RATIO
+// ══════════════════════════════════════════
+function buildUqScatter(active) {
+  const seen = new Set();
+  const mutualPts = [], ghostPts = [];
+
+  active.forEach(d => {
+    const u = d.username || d.user || '';
+    if (!u || d.profile_ratio <= 0 || seen.has(u)) return;
+    seen.add(u);
+    const s = scoreUsername(u);
+    const pt = { x: s.score, y: d.profile_ratio, username: u };
+    if (d.mutual) mutualPts.push(pt); else ghostPts.push(pt);
+  });
+
+  // Simple linear regression for trend line
+  const allPts = [...mutualPts, ...ghostPts];
+  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, n = allPts.length;
+  allPts.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
+  const slope = n > 1 ? (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) : 0;
+  const intercept = n > 0 ? (sumY - slope * sumX) / n : 0;
+  // R²
+  const meanY = sumY / (n || 1);
+  let ssTot = 0, ssRes = 0;
+  allPts.forEach(p => { const pred = slope * p.x + intercept; ssRes += (p.y - pred) ** 2; ssTot += (p.y - meanY) ** 2; });
+  const r2 = ssTot > 0 ? (1 - ssRes / ssTot) : 0;
+
+  // Trend line dataset
+  const xMin = Math.max(0, Math.min(...allPts.map(p => p.x)) - 5);
+  const xMax = Math.min(100, Math.max(...allPts.map(p => p.x)) + 5);
+  const trendData = [
+    { x: xMin, y: slope * xMin + intercept },
+    { x: xMax, y: slope * xMax + intercept }
+  ];
+
+  const canvas = document.getElementById('scatterUqRatio');
+  new Chart(canvas, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'MUTUALS',
+          data: mutualPts,
+          backgroundColor: MUTUAL_COLOR_A,
+          borderColor: MUTUAL_COLOR,
+          borderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointStyle: 'rect'
+        },
+        {
+          label: 'NO MUTUALS',
+          data: ghostPts,
+          backgroundColor: GHOST_COLOR_A,
+          borderColor: GHOST_COLOR,
+          borderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointStyle: 'rect'
+        },
+        {
+          label: `TENDENCIA (R²=${r2.toFixed(3)})`,
+          data: trendData,
+          type: 'line',
+          borderColor: '#00D9FF',
+          borderWidth: 2,
+          borderDash: [8, 4],
+          pointRadius: 0,
+          fill: false,
+          tension: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'USERNAME SCORE (mayor = mejor)', font: { size: 9 }, color: '#737373' },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+          min: 0, max: 100
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'RATIO (followers/following)', font: { size: 9 }, color: '#737373' },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true }
+        },
+        tooltip: {
+          ...TT_BASE,
+          borderColor: '#FFF',
+          borderWidth: 2,
+          filter: item => item.datasetIndex < 2,
+          callbacks: {
+            title: items => `@${items[0].raw.username}`,
+            label: ctx => ` score: ${ctx.raw.x} → ratio: ${ctx.raw.y.toFixed(3)}`
+          }
+        }
+      }
+    }
+  });
 }
 </script>
 </body>
