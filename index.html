@@ -1261,22 +1261,31 @@ function buildVersus(mutuals, ghosts) {
 // USERNAME QUALITY SCORE
 // ══════════════════════════════════════════
 // Score = 100 - penalties
-//   length penalty: 3 pts per character
-//   digit penalty:  5 pts per digit
-//   sign penalty:   5 pts per sign (. - _ etc)
-// Floor at 0. "abc" (3 chars, 0 signs, 0 digits) = 100 - 9 = 91
-// "p4bli.t0668" = 100 - 33(len) - 20(digits:4*5) - 5(dot) = 42
+//   length:    3 pts per character
+//   digit:     5 pts per digit
+//   sign:      5 pts per sign (. - _ etc)
+//   uncommon:  1 pt per y/z/w
+//   x:         2 pts per x
+//   repeat:    1 pt per consecutive repeated letter
 function scoreUsername(username) {
   const u = (username || '').toLowerCase();
   const len = u.length;
   const digits = (u.match(/[0-9]/g) || []).length;
   const signs = (u.match(/[^a-z0-9]/g) || []).length;
+  const uncommon = (u.match(/[ywz]/g) || []).length;
+  const xCount = (u.match(/x/g) || []).length;
+  // repeated consecutive letters: "hoola" → 1 repeat (oo)
+  let repeats = 0;
+  for (let i = 1; i < u.length; i++) { if (u[i] === u[i - 1] && /[a-z]/.test(u[i])) repeats++; }
   const lenPenalty = len * 3;
   const digitPenalty = digits * 5;
   const signPenalty = signs * 5;
-  const total = lenPenalty + digitPenalty + signPenalty;
+  const uncommonPenalty = uncommon * 1;
+  const xPenalty = xCount * 2;
+  const repeatPenalty = repeats * 1;
+  const total = lenPenalty + digitPenalty + signPenalty + uncommonPenalty + xPenalty + repeatPenalty;
   const score = Math.max(0, Math.min(100, 100 - total));
-  return { score, len, digits, signs, lenPenalty, digitPenalty, signPenalty };
+  return { score, len, digits, signs, uncommon, xCount, repeats, lenPenalty, digitPenalty, signPenalty, uncommonPenalty, xPenalty, repeatPenalty };
 }
 
 function buildUsernameQuality(active) {
@@ -1324,7 +1333,7 @@ function buildUsernameQuality(active) {
           <div class="uq-score-fill" style="width:${t.score}%;background:${color};"></div>
         </div>
       </td>
-      <td class="uq-penalty">len:−${t.lenPenalty} · dig:−${t.digitPenalty} · sig:−${t.signPenalty}</td>
+      <td class="uq-penalty">len:−${t.lenPenalty} · dig:−${t.digitPenalty} · sig:−${t.signPenalty} · yzw:−${t.uncommonPenalty} · x:−${t.xPenalty} · rep:−${t.repeatPenalty}</td>
       <td>${mutDot}</td>
     </tr>`;
   });
