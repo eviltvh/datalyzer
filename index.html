@@ -494,10 +494,63 @@
       vertical-align: middle;
     }
 
+    /* ══════════ BEST USER CARDS ══════════ */
+    .best-user-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .best-card {
+      background: var(--bg-card);
+      border: var(--border-thick);
+      padding: 2rem 1.8rem;
+      text-align: center;
+      position: relative;
+    }
+    .best-card .best-crown {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .best-card .best-category {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+    .best-card .best-username {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-black);
+      margin-bottom: 0.4rem;
+      word-break: break-all;
+    }
+    .best-card .best-stat {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .best-card .best-detail {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+    .best-card.best-combined {
+      border: 3px solid var(--accent-neon);
+      box-shadow: var(--shadow-accent);
+    }
+
     /* ══════════ RESPONSIVE ══════════ */
     @media (max-width: 768px) {
       .chart-grid, .dist-grid { grid-template-columns: 1fr; }
       .versus-grid { grid-template-columns: 1fr; }
+      .best-user-grid { grid-template-columns: 1fr; }
       .versus-card.mutual-side { border-right: 3px solid #000; border-bottom: none; }
       .versus-card.ghost-side { border-left: 3px solid #000; border-top: none; }
       .versus-divider {
@@ -652,6 +705,19 @@
         <div class="chart-container" style="height:420px;"><canvas id="scatterUqRatio"></canvas></div>
       </div>
     </div>
+
+    <div class="section-title">[USERNAME SCORE PROMEDIO POR ORIGEN]</div>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3><span class="badge compare-badge">RANKING</span> ¿QUÉ ORIGEN TIENE LOS MEJORES USERNAMES? → ORDENADO POR SCORE PROMEDIO</h3>
+        <div class="chart-container" style="position:relative; min-height:250px;">
+          <canvas id="uqByOrigin"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">[EL MEJOR USER — NOMBRE + RATIO]</div>
+    <div class="best-user-grid" id="bestUserGrid"></div>
 
     <div class="footer">
       POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a>
@@ -824,6 +890,12 @@ function buildDashboard(data) {
 
   // Scatter: username score vs ratio
   buildUqScatter(active);
+
+  // Avg username score by origin
+  buildUqByOrigin(active);
+
+  // Best user overall
+  buildBestUser(active);
 }
 
 // ══════════════════════════════════════════
@@ -1454,6 +1526,126 @@ function buildUqScatter(active) {
       }
     }
   });
+}
+
+// ══════════════════════════════════════════
+// AVG USERNAME SCORE BY ORIGIN
+// ══════════════════════════════════════════
+function buildUqByOrigin(active) {
+  const seen = {};
+  active.forEach(d => {
+    const u = d.username || d.user || '';
+    if (!u) return;
+    const o = d.origen || 'unknown';
+    if (!seen[o]) seen[o] = [];
+    const s = scoreUsername(u);
+    seen[o].push(s.score);
+  });
+
+  const origins = Object.keys(seen)
+    .map(o => ({ name: o, avg: seen[o].reduce((a, b) => a + b, 0) / seen[o].length, count: seen[o].length }))
+    .filter(o => o.count > 0)
+    .sort((a, b) => b.avg - a.avg);
+
+  if (origins.length === 0) return;
+
+  const canvas = document.getElementById('uqByOrigin');
+  const calcHeight = Math.max(250, origins.length * 38 + 80);
+  canvas.parentElement.style.minHeight = calcHeight + 'px';
+  canvas.style.height = calcHeight + 'px';
+
+  function barColor(avg) {
+    if (avg >= 50) return MUTUAL_COLOR;
+    if (avg >= 30) return '#00D9FF';
+    if (avg >= 15) return '#FF6688';
+    return GHOST_COLOR;
+  }
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: origins.map(o => `@${o.name}`),
+      datasets: [{
+        label: 'Score Promedio',
+        data: origins.map(o => parseFloat(o.avg.toFixed(1))),
+        backgroundColor: origins.map(o => barColor(o.avg)),
+        borderColor: '#000',
+        borderWidth: 2,
+        barPercentage: 0.72,
+        categoryPercentage: 0.88
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'USERNAME SCORE PROMEDIO', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 9 }, color: '#737373' }, border: { color: '#000', width: 2 }, beginAtZero: true, max: 100 },
+        y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, color: '#000', padding: 8 }, border: { color: '#000', width: 2 } }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { ...TT_BASE, borderColor: '#FFF', borderWidth: 2, callbacks: { label: ctx => { const o = origins[ctx.dataIndex]; return ` avg score: ${o.avg.toFixed(1)} (n=${o.count})`; } } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+// BEST USER: BEST NAME, BEST RATIO, BEST COMBINED
+// ══════════════════════════════════════════
+function buildBestUser(active) {
+  const users = [];
+  const seen = new Set();
+  active.forEach(d => {
+    const u = d.username || d.user || '';
+    if (!u || seen.has(u) || d.profile_ratio <= 0) return;
+    seen.add(u);
+    const s = scoreUsername(u);
+    users.push({ username: u, score: s.score, ratio: d.profile_ratio, mutual: d.mutual, origen: d.origen || '?', followers: d.profile_followers, following: d.profile_following });
+  });
+
+  if (users.length === 0) return;
+
+  // Normalize for combined: score 0-100 already, ratio needs normalization
+  const maxRatio = Math.max(...users.map(u => u.ratio));
+  users.forEach(u => {
+    u.ratioNorm = maxRatio > 0 ? (u.ratio / maxRatio) * 100 : 0;
+    u.combined = (u.score * 0.5) + (u.ratioNorm * 0.5);
+  });
+
+  const bestName = [...users].sort((a, b) => b.score - a.score)[0];
+  const bestRatio = [...users].sort((a, b) => b.ratio - a.ratio)[0];
+  const bestCombined = [...users].sort((a, b) => b.combined - a.combined)[0];
+
+  const mutDot = (m) => `<span class="uq-mutual-dot" style="background:${m ? MUTUAL_COLOR : GHOST_COLOR};"></span>`;
+
+  const container = document.getElementById('bestUserGrid');
+  container.innerHTML = `
+    <div class="best-card">
+      <div class="best-crown">✦</div>
+      <div class="best-category">Mejor Nombre</div>
+      <div class="best-username">@${bestName.username}</div>
+      <div class="best-stat" style="color:#555500;">${bestName.score}</div>
+      <div class="best-detail">score · ratio: ${bestName.ratio.toFixed(3)}</div>
+      <div class="best-detail">origen: @${bestName.origen} ${mutDot(bestName.mutual)}</div>
+    </div>
+    <div class="best-card">
+      <div class="best-crown">✦</div>
+      <div class="best-category">Mejor Ratio</div>
+      <div class="best-username">@${bestRatio.username}</div>
+      <div class="best-stat" style="color:#990033;">${bestRatio.ratio.toFixed(3)}</div>
+      <div class="best-detail">${bestRatio.followers.toLocaleString()} seg / ${bestRatio.following.toLocaleString()} sig</div>
+      <div class="best-detail">score: ${bestRatio.score} · @${bestRatio.origen} ${mutDot(bestRatio.mutual)}</div>
+    </div>
+    <div class="best-card best-combined">
+      <div class="best-crown">★</div>
+      <div class="best-category">Mejor Overall</div>
+      <div class="best-username">@${bestCombined.username}</div>
+      <div class="best-stat" style="color:#1a1a1a;">${bestCombined.combined.toFixed(1)}</div>
+      <div class="best-detail">score: ${bestCombined.score} · ratio: ${bestCombined.ratio.toFixed(3)}</div>
+      <div class="best-detail">50% nombre + 50% ratio normalizado</div>
+      <div class="best-detail">origen: @${bestCombined.origen} ${mutDot(bestCombined.mutual)}</div>
+    </div>
+  `;
 }
 </script>
 </body>
