@@ -747,7 +747,8 @@ function buildDashboard(data) {
   document.getElementById('uploadZone').style.display = 'none';
   document.getElementById('dashboard').classList.add('visible');
 
-  const active = data.filter(d => d.status === 'active');
+  const active = data.filter(d => d.status === 'active')
+    .filter(d => d.origen && d.origen !== 'unknown' && d.origen !== '@unknown');
   const mutuals = active.filter(d => d.mutual);
   const ghosts = active.filter(d => !d.mutual);
   const totalHistoric = data.length;
