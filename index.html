@@ -23,16 +23,9 @@
       --accent-neon-a: #E8FF0044;
       --accent-pink-a: #FF336644;
       --accent-blue-a: #00D9FF33;
-      --palette-1: #E8FF00;
-      --palette-2: #FF3366;
-      --palette-3: #00D9FF;
-      --palette-4: #000000;
-      --palette-5: #737373;
-      --palette-6: #FAFAF9;
       --border-thick: 3px solid #000000;
       --border-medium: 2px solid #000000;
       --border-thin: 1px solid #D4D4D4;
-      --border-accent: 3px solid #E8FF00;
       --shadow-hard: 5px 5px 0px #000000;
       --shadow-small: 3px 3px 0px #000000;
       --shadow-accent: 4px 4px 0px #E8FF00;
@@ -40,550 +33,124 @@
       --font-mono: 'JetBrains Mono', monospace;
       --font-sans: 'Inter', sans-serif;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg-deep);
-      color: var(--text-white);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ══════════ HEADER ══════════ */
-    .header {
-      padding: 2.5rem 2.5rem 1.8rem;
-      border-bottom: var(--border-thick);
-      border-color: #E8FF00;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      position: relative;
-    }
-    .header::after {
-      content: '';
-      position: absolute;
-      left: 2.5rem;
-      bottom: -3px;
-      width: 120px;
-      height: 3px;
-      background: var(--accent-neon);
-    }
-    .header h1 {
-      font-family: var(--font-serif);
-      font-size: 2.6rem;
-      font-weight: 500;
-      color: var(--text-white);
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-    .header h1 .slash {
-      font-family: var(--font-mono);
-      color: var(--accent-neon);
-      font-weight: 300;
-      font-size: 1.8rem;
-      margin: 0 0.3rem;
-    }
-    .header .subtitle {
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-      font-size: 0.65rem;
-      margin-top: 0.5rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-    .header-badge {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 600;
-      color: var(--text-black);
-      background: var(--accent-neon);
-      border: 2px solid var(--text-black);
-      padding: 0.35rem 0.8rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      box-shadow: var(--shadow-small);
-    }
-
-    /* ══════════ UPLOAD ZONE ══════════ */
-    .upload-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 65vh;
-      padding: 2rem;
-      animation: fadeUp 0.5s ease-out;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .drop-area {
-      background: var(--bg-card);
-      border: var(--border-thick);
-      padding: 3.5rem 4rem;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
-      max-width: 520px;
-      width: 100%;
-      box-shadow: var(--shadow-hard);
-      transition: box-shadow 0.15s ease-out, transform 0.15s ease-out;
-    }
-    .drop-area:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 7px 7px 0px #000000;
-    }
-    .drop-area.dragover {
-      border-color: var(--accent-neon);
-      box-shadow: 5px 5px 0px var(--accent-neon);
-    }
+    body { background: var(--bg-deep); color: var(--text-white); font-family: var(--font-sans); min-height: 100vh; overflow-x: hidden; }
+    .header { padding: 2.5rem 2.5rem 1.8rem; border-bottom: 3px solid #E8FF00; display: flex; align-items: flex-end; justify-content: space-between; position: relative; }
+    .header::after { content: ''; position: absolute; left: 2.5rem; bottom: -3px; width: 120px; height: 3px; background: var(--accent-neon); }
+    .header h1 { font-family: var(--font-serif); font-size: 2.6rem; font-weight: 500; color: var(--text-white); letter-spacing: -0.03em; line-height: 1; }
+    .header h1 .slash { font-family: var(--font-mono); color: var(--accent-neon); font-weight: 300; font-size: 1.8rem; margin: 0 0.3rem; }
+    .header .subtitle { font-family: var(--font-mono); color: var(--text-muted); font-size: 0.65rem; margin-top: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; }
+    .header-badge { font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; color: var(--text-black); background: var(--accent-neon); border: 2px solid var(--text-black); padding: 0.35rem 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; box-shadow: var(--shadow-small); }
+    .upload-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65vh; padding: 2rem; gap: 1.5rem; animation: fadeUp 0.5s ease-out; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .drop-area { background: var(--bg-card); border: var(--border-thick); padding: 3.5rem 4rem; text-align: center; cursor: pointer; position: relative; max-width: 520px; width: 100%; box-shadow: var(--shadow-hard); transition: box-shadow 0.15s ease-out, transform 0.15s ease-out; }
+    .drop-area:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0px #000000; }
+    .drop-area.dragover { border-color: var(--accent-neon); box-shadow: 5px 5px 0px var(--accent-neon); }
     .drop-area .icon { font-size: 2rem; margin-bottom: 1.2rem; display: block; }
-    .drop-area .label-text {
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      color: var(--text-black);
-      margin-bottom: 0.4rem;
-    }
-    .drop-area .label-text strong {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      background: var(--accent-neon);
-      padding: 0.1em 0.4em;
-      border: 1px solid var(--text-black);
-    }
-    .drop-area .hint {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-top: 0.6rem;
-    }
-    .drop-area input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-    .drop-area::before {
-      content: '[';
-      position: absolute;
-      top: 12px;
-      left: 14px;
-      font-family: var(--font-mono);
-      font-size: 1.8rem;
-      color: var(--text-disabled);
-      font-weight: 300;
-    }
-    .drop-area::after {
-      content: ']';
-      position: absolute;
-      bottom: 12px;
-      right: 14px;
-      font-family: var(--font-mono);
-      font-size: 1.8rem;
-      color: var(--text-disabled);
-      font-weight: 300;
-    }
-
-    /* ══════════ DASHBOARD ══════════ */
-    .dashboard {
-      display: none;
-      padding: 2rem 2.5rem;
-      animation: fadeUp 0.4s ease-out;
-    }
+    .drop-area .label-text { font-family: var(--font-serif); font-size: 1.4rem; color: var(--text-black); margin-bottom: 0.4rem; }
+    .drop-area .label-text strong { font-family: var(--font-mono); font-size: 1rem; background: var(--accent-neon); padding: 0.1em 0.4em; border: 1px solid var(--text-black); }
+    .drop-area .hint { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.6rem; }
+    .drop-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop-area::before { content: '['; position: absolute; top: 12px; left: 14px; font-family: var(--font-mono); font-size: 1.8rem; color: var(--text-disabled); font-weight: 300; }
+    .drop-area::after { content: ']'; position: absolute; bottom: 12px; right: 14px; font-family: var(--font-mono); font-size: 1.8rem; color: var(--text-disabled); font-weight: 300; }
+    .drop-area.mini { padding: 2rem 3rem; max-width: 420px; box-shadow: var(--shadow-small); }
+    .drop-area.mini .icon { font-size: 1.4rem; margin-bottom: 0.8rem; }
+    .drop-area.mini .label-text { font-size: 1.1rem; }
+    .drop-area.loaded { border-color: var(--accent-neon); opacity: 0.6; pointer-events: none; }
+    .dashboard { display: none; padding: 2rem 2.5rem; animation: fadeUp 0.4s ease-out; }
     .dashboard.visible { display: block; }
-
-    .section-title {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .section-title::before {
-      content: '';
-      width: 4px;
-      height: 16px;
-      background: var(--accent-neon);
-      display: inline-block;
-      flex-shrink: 0;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 2px;
-      background: #222;
-      margin-left: 0.5rem;
-    }
-
-    /* ══════════ STATS BAR ══════════ */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }
-    .stat-card {
-      background: var(--bg-card);
-      border: var(--border-medium);
-      padding: 1.2rem 1.4rem;
-      position: relative;
-      transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
-    }
-    .stat-card:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: var(--shadow-small);
-    }
-    .stat-card .stat-label {
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.5rem;
-    }
-    .stat-card .stat-value {
-      font-family: var(--font-serif);
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--text-black);
-      line-height: 1;
-    }
+    .section-title { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+    .section-title::before { content: ''; width: 4px; height: 16px; background: var(--accent-neon); display: inline-block; flex-shrink: 0; }
+    .section-title::after { content: ''; flex: 1; height: 2px; background: #222; margin-left: 0.5rem; }
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+    .stat-card { background: var(--bg-card); border: var(--border-medium); padding: 1.2rem 1.4rem; position: relative; transition: transform 0.15s ease-out, box-shadow 0.15s ease-out; }
+    .stat-card:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-small); }
+    .stat-card .stat-label { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.5rem; }
+    .stat-card .stat-value { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600; color: var(--text-black); line-height: 1; }
     .stat-card.mutual { border-left: 4px solid var(--accent-neon); }
-    .stat-card.mutual .stat-value { color: #1a1a1a; }
     .stat-card.ghost { border-left: 4px solid var(--accent-pink); }
-    .stat-card.ghost .stat-value { color: #1a1a1a; }
     .stat-card.info { border-left: 4px solid var(--text-black); }
-    .stat-card.info .stat-value { color: var(--text-black); }
     .stat-card.warn { border-left: 4px solid var(--accent-blue); }
-    .stat-card.warn .stat-value { color: #1a1a1a; }
-    .stat-card.mutual .stat-label::before,
-    .stat-card.ghost .stat-label::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      border: 1px solid var(--text-black);
-      border-radius: 50%;
-      margin-right: 0.4rem;
-      vertical-align: middle;
-    }
+    .stat-card.self-card { border-left: 4px solid var(--accent-blue); border-right: 4px solid var(--accent-neon); }
+    .stat-card.mutual .stat-label::before, .stat-card.ghost .stat-label::before { content: ''; display: inline-block; width: 6px; height: 6px; border: 1px solid var(--text-black); border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
     .stat-card.mutual .stat-label::before { background: var(--accent-neon); }
     .stat-card.ghost .stat-label::before { background: var(--accent-pink); }
-
-    /* ══════════ CHART GRID ══════════ */
-    .chart-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .chart-card {
-      background: var(--bg-card);
-      border: var(--border-thick);
-      padding: 1.8rem;
-      position: relative;
-      overflow: hidden;
-    }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .chart-card { background: var(--bg-card); border: var(--border-thick); padding: 1.8rem; position: relative; overflow: hidden; }
     .chart-card.full { grid-column: 1 / -1; }
-    .chart-card h3 {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .chart-card h3 .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.55rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      border: 2px solid var(--text-black);
-    }
+    .chart-card h3 { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .chart-card h3 .badge { display: inline-block; padding: 0.2rem 0.6rem; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; border: 2px solid var(--text-black); }
     .badge.mutual-badge { background: var(--accent-neon); color: var(--text-black); }
     .badge.ghost-badge { background: var(--accent-pink); color: var(--text-white); }
     .badge.compare-badge { background: var(--text-black); color: var(--text-white); }
     .badge.pct-badge { background: var(--accent-blue); color: var(--text-black); }
-    .chart-card::before {
-      content: '+';
-      position: absolute;
-      top: 6px;
-      right: 10px;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-disabled);
-      font-weight: 300;
-    }
+    .badge.self-badge { background: linear-gradient(135deg, var(--accent-blue), var(--accent-neon)); color: var(--text-black); }
+    .chart-card::before { content: '+'; position: absolute; top: 6px; right: 10px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-disabled); font-weight: 300; }
     .chart-container { position: relative; width: 100%; }
     .chart-container.pie { max-width: 300px; margin: 0 auto; }
-
-    /* ══════════ FIX: forced height for bin/polygon charts ══════════ */
-    .chart-container.fixed-h {
-      height: 320px;
-    }
-
-    .dist-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
+    .chart-container.fixed-h { height: 320px; }
+    .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
     .dist-grid .chart-card.full-polygon { grid-column: 1 / -1; }
-
-    /* ══════════ VERSUS CARD ══════════ */
-    .versus-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 0;
-      margin-bottom: 1.5rem;
-    }
-    .versus-card {
-      background: var(--bg-card);
-      border: var(--border-thick);
-      padding: 2rem 2.2rem;
-      text-align: center;
-      position: relative;
-    }
-    .versus-card .vs-label {
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.6rem;
-    }
-    .versus-card .vs-user {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-black);
-      margin-bottom: 0.3rem;
-      word-break: break-all;
-    }
-    .versus-card .vs-ratio {
-      font-family: var(--font-serif);
-      font-size: 2.8rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .versus-card .vs-detail {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--text-muted);
-    }
-    .versus-card.mutual-side {
-      border-right: none;
-      border-left: 4px solid var(--accent-neon);
-    }
+    .versus-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; margin-bottom: 1.5rem; }
+    .versus-card { background: var(--bg-card); border: var(--border-thick); padding: 2rem 2.2rem; text-align: center; }
+    .versus-card .vs-label { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 0.6rem; }
+    .versus-card .vs-user { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-black); margin-bottom: 0.3rem; word-break: break-all; }
+    .versus-card .vs-ratio { font-family: var(--font-serif); font-size: 2.8rem; font-weight: 700; line-height: 1; margin-bottom: 0.3rem; }
+    .versus-card .vs-detail { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); }
+    .versus-card.mutual-side { border-right: none; border-left: 4px solid var(--accent-neon); }
     .versus-card.mutual-side .vs-ratio { color: #1a1a00; }
-    .versus-card.ghost-side {
-      border-left: none;
-      border-right: 4px solid var(--accent-pink);
-    }
+    .versus-card.ghost-side { border-left: none; border-right: 4px solid var(--accent-pink); }
     .versus-card.ghost-side .vs-ratio { color: #330011; }
-    .versus-divider {
-      background: var(--text-black);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 60px;
-      border-top: 3px solid #000;
-      border-bottom: 3px solid #000;
-    }
-    .versus-divider span {
-      font-family: var(--font-serif);
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--accent-neon);
-      font-style: italic;
-    }
-
-    /* ══════════ FOOTER ══════════ */
-    .footer {
-      text-align: center;
-      padding: 2.5rem 2rem;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border-top: var(--border-thick);
-      margin-top: 1.5rem;
-      position: relative;
-    }
-    .footer::before {
-      content: '→';
-      display: block;
-      font-size: 1rem;
-      margin-bottom: 0.8rem;
-      color: var(--accent-neon);
-    }
-    .footer a {
-      color: var(--accent-neon);
-      text-decoration: none;
-      border-bottom: 1px solid var(--accent-neon);
-      padding-bottom: 1px;
-    }
-    .footer a:hover { color: var(--text-white); border-color: var(--text-white); }
-
-    /* ══════════ USERNAME QUALITY TABLE ══════════ */
+    .versus-divider { background: var(--text-black); display: flex; align-items: center; justify-content: center; width: 60px; border-top: 3px solid #000; border-bottom: 3px solid #000; }
+    .versus-divider span { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700; color: var(--accent-neon); font-style: italic; }
+    .self-section { display: none; }
+    .self-section.visible { display: block; }
+    .self-hero { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .footer { text-align: center; padding: 2.5rem 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; border-top: var(--border-thick); margin-top: 1.5rem; }
+    .footer::before { content: '→'; display: block; font-size: 1rem; margin-bottom: 0.8rem; color: var(--accent-neon); }
+    .footer a { color: var(--accent-neon); text-decoration: none; border-bottom: 1px solid var(--accent-neon); padding-bottom: 1px; }
     .uq-table-wrap { overflow-x: auto; }
-    .uq-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-    }
-    .uq-table th {
-      text-align: left;
-      font-size: 0.55rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
-      padding: 0.6rem 0.8rem;
-      border-bottom: var(--border-medium);
-    }
-    .uq-table td {
-      padding: 0.55rem 0.8rem;
-      border-bottom: var(--border-thin);
-      color: var(--text-black);
-      vertical-align: middle;
-    }
-    .uq-table tr:last-child td { border-bottom: none; }
-    .uq-rank {
-      font-family: var(--font-serif);
-      font-size: 1.2rem;
-      font-weight: 700;
-      width: 36px;
-      text-align: center;
-    }
-    .uq-user { font-weight: 600; }
-    .uq-score-bar {
-      height: 14px;
-      border: 2px solid #000;
-      position: relative;
-      min-width: 80px;
-    }
-    .uq-score-fill {
-      height: 100%;
-      transition: width 0.4s ease-out;
-    }
-    .uq-penalty {
-      font-size: 0.6rem;
-      color: var(--text-muted);
-    }
-    .uq-mutual-dot {
-      display: inline-block;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      border: 1px solid #000;
-      vertical-align: middle;
-    }
-
-    /* ══════════ BEST USER CARDS ══════════ */
-    .best-user-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .best-card {
-      background: var(--bg-card);
-      border: var(--border-thick);
-      padding: 2rem 1.8rem;
-      text-align: center;
-      position: relative;
-    }
-    .best-card .best-crown {
-      font-size: 1.6rem;
-      margin-bottom: 0.4rem;
-    }
-    .best-card .best-category {
-      font-family: var(--font-mono);
-      font-size: 0.55rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--text-muted);
-      margin-bottom: 0.8rem;
-    }
-    .best-card .best-username {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-black);
-      margin-bottom: 0.4rem;
-      word-break: break-all;
-    }
-    .best-card .best-stat {
-      font-family: var(--font-serif);
-      font-size: 2.2rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .best-card .best-detail {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
-    }
-    .best-card.best-combined {
-      border: 3px solid var(--accent-neon);
-      box-shadow: var(--shadow-accent);
-    }
-
-    /* ══════════ RESPONSIVE ══════════ */
+    .uq-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.75rem; }
+    .uq-table th { text-align: left; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); padding: 0.6rem 0.8rem; border-bottom: var(--border-medium); }
+    .uq-table td { padding: 0.55rem 0.8rem; border-bottom: var(--border-thin); color: var(--text-black); vertical-align: middle; }
+    .uq-rank { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; width: 36px; text-align: center; }
+    .uq-score-bar { height: 14px; border: 2px solid #000; position: relative; min-width: 80px; }
+    .uq-score-fill { height: 100%; transition: width 0.4s ease-out; }
+    .uq-penalty { font-size: 0.6rem; color: var(--text-muted); }
+    .uq-mutual-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #000; vertical-align: middle; }
+    .best-user-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .best-card { background: var(--bg-card); border: var(--border-thick); padding: 2rem 1.8rem; text-align: center; }
+    .best-card .best-crown { font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .best-card .best-category { font-family: var(--font-mono); font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.8rem; }
+    .best-card .best-username { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--text-black); margin-bottom: 0.4rem; word-break: break-all; }
+    .best-card .best-stat { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 700; line-height: 1; margin-bottom: 0.3rem; }
+    .best-card .best-detail { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .best-card.best-combined { border: 3px solid var(--accent-neon); box-shadow: var(--shadow-accent); }
     @media (max-width: 768px) {
       .chart-grid, .dist-grid { grid-template-columns: 1fr; }
       .versus-grid { grid-template-columns: 1fr; }
       .best-user-grid { grid-template-columns: 1fr; }
+      .self-hero { grid-template-columns: 1fr 1fr; }
       .versus-card.mutual-side { border-right: 3px solid #000; border-bottom: none; }
       .versus-card.ghost-side { border-left: 3px solid #000; border-top: none; }
-      .versus-divider {
-        width: 100%;
-        height: 50px;
-        border-left: 3px solid #000;
-        border-right: 3px solid #000;
-        border-top: none;
-        border-bottom: none;
-      }
+      .versus-divider { width: 100%; height: 50px; border-left: 3px solid #000; border-right: 3px solid #000; border-top: none; border-bottom: none; }
       .header { flex-direction: column; align-items: flex-start; gap: 1rem; }
       .header h1 { font-size: 1.8rem; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .drop-area { padding: 2.5rem 2rem; }
       .dashboard { padding: 1.5rem; }
     }
-    @media (max-width: 480px) {
-      .stats-bar { grid-template-columns: 1fr; }
-      .header h1 { font-size: 1.5rem; }
-    }
+    @media (max-width: 480px) { .stats-bar { grid-template-columns: 1fr; } .self-hero { grid-template-columns: 1fr; } .header h1 { font-size: 1.5rem; } }
   </style>
 </head>
 <body>
-
   <div class="header">
     <div class="header-left">
       <h1>POLPO <span class="slash">//</span> Analytics</h1>
-      <div class="subtitle">[instagram growth intelligence] → dashboard v2 → -bynd</div>
+      <div class="subtitle">[instagram growth intelligence] → dashboard v3 → -bynd</div>
     </div>
     <div class="header-badge">SNCTVM TOOLS</div>
   </div>
 
-  <!-- UPLOAD -->
   <div class="upload-zone" id="uploadZone">
     <div class="drop-area" id="dropArea">
       <span class="icon">↓</span>
@@ -591,1061 +158,443 @@
       <div class="hint">click para seleccionar → generado con gen_stats.py</div>
       <input type="file" id="fileInput" accept=".csv">
     </div>
+    <div class="drop-area mini" id="dropAreaSelf" style="display:none;">
+      <span class="icon">🪞</span>
+      <div class="label-text">Suelta <strong>self_history.csv</strong></div>
+      <div class="hint">opcional → historial de crecimiento propio</div>
+      <input type="file" id="fileInputSelf" accept=".csv">
+    </div>
   </div>
 
-  <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
+    <div class="self-section" id="selfSection">
+      <div class="section-title">[MI CRECIMIENTO — @<span id="selfUsername">???</span>]</div>
+      <div class="self-hero" id="selfHero"></div>
+      <div class="chart-grid">
+        <div class="chart-card full">
+          <h3><span class="badge self-badge">🪞 SELF</span> FOLLOWERS EN EL TIEMPO → CRECIMIENTO</h3>
+          <div class="chart-container" style="height:360px;"><canvas id="selfFollowersLine"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3><span class="badge self-badge">🪞 SELF</span> FOLLOWING EN EL TIEMPO</h3>
+          <div class="chart-container" style="height:280px;"><canvas id="selfFollowingLine"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3><span class="badge self-badge">🪞 SELF</span> RATIO EN EL TIEMPO</h3>
+          <div class="chart-container" style="height:280px;"><canvas id="selfRatioLine"></canvas></div>
+        </div>
+      </div>
+      <div id="selfUploadInline" style="display:none; margin-bottom:1.5rem; text-align:center;">
+        <div class="drop-area mini" id="dropAreaSelfInline" style="margin:0 auto;">
+          <span class="icon">🪞</span>
+          <div class="label-text">Suelta <strong>self_history.csv</strong></div>
+          <div class="hint">para ver gráficas de crecimiento</div>
+          <input type="file" id="fileInputSelfInline" accept=".csv">
+        </div>
+      </div>
+    </div>
 
     <div class="section-title">[RESUMEN]</div>
     <div class="stats-bar" id="statsBar"></div>
-
     <div class="section-title">[ORIGEN POR TIPO]</div>
     <div class="chart-grid">
-      <div class="chart-card">
-        <h3><span class="badge mutual-badge">MUTUALS</span> ORIGEN</h3>
-        <div class="chart-container pie"><canvas id="pieMutuals"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><span class="badge ghost-badge">NO MUTUALS</span> ORIGEN</h3>
-        <div class="chart-container pie"><canvas id="pieGhosts"></canvas></div>
-      </div>
+      <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> ORIGEN</h3><div class="chart-container pie"><canvas id="pieMutuals"></canvas></div></div>
+      <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> ORIGEN</h3><div class="chart-container pie"><canvas id="pieGhosts"></canvas></div></div>
     </div>
-
     <div class="section-title">[RATIO EN EL TIEMPO]</div>
     <div class="chart-grid">
-      <div class="chart-card">
-        <h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO</h3>
-        <div class="chart-container"><canvas id="lineMutuals"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO</h3>
-        <div class="chart-container"><canvas id="lineGhosts"></canvas></div>
-      </div>
+      <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO</h3><div class="chart-container"><canvas id="lineMutuals"></canvas></div></div>
+      <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO</h3><div class="chart-container"><canvas id="lineGhosts"></canvas></div></div>
     </div>
-
     <div class="section-title">[DISTRIBUCIONES DE RATIO — FRECUENCIA ABSOLUTA]</div>
     <div class="dist-grid">
-      <div class="chart-card">
-        <h3><span class="badge mutual-badge">MUTUALS</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container fixed-h"><canvas id="histMutuals"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><span class="badge ghost-badge">NO MUTUALS</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container fixed-h"><canvas id="histGhosts"></canvas></div>
-      </div>
-      <div class="chart-card full-polygon">
-        <h3><span class="badge compare-badge">COMPARATIVO</span> POLÍGONO DE FRECUENCIAS → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3>
-        <div class="chart-container fixed-h"><canvas id="polyCompare"></canvas></div>
-      </div>
+      <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histMutuals"></canvas></div></div>
+      <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histGhosts"></canvas></div></div>
+      <div class="chart-card full-polygon"><h3><span class="badge compare-badge">COMPARATIVO</span> POLÍGONO DE FRECUENCIAS → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3><div class="chart-container fixed-h"><canvas id="polyCompare"></canvas></div></div>
     </div>
-
     <div class="section-title">[DISTRIBUCIONES DE RATIO — PORCENTUAL]</div>
     <div class="dist-grid">
-      <div class="chart-card">
-        <h3><span class="badge mutual-badge">MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container fixed-h"><canvas id="histMutualsPct"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><span class="badge ghost-badge">NO MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3>
-        <div class="chart-container fixed-h"><canvas id="histGhostsPct"></canvas></div>
-      </div>
-      <div class="chart-card full-polygon">
-        <h3><span class="badge compare-badge">COMPARATIVO</span> <span class="badge pct-badge">%</span> POLÍGONO PORCENTUAL → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3>
-        <div class="chart-container fixed-h"><canvas id="polyComparePct"></canvas></div>
-      </div>
+      <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histMutualsPct"></canvas></div></div>
+      <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histGhostsPct"></canvas></div></div>
+      <div class="chart-card full-polygon"><h3><span class="badge compare-badge">COMPARATIVO</span> <span class="badge pct-badge">%</span> POLÍGONO PORCENTUAL → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3><div class="chart-container fixed-h"><canvas id="polyComparePct"></canvas></div></div>
     </div>
-
     <div class="section-title">[TASA DE MUTUALIDAD POR ORIGEN]</div>
-    <div class="chart-grid">
-      <div class="chart-card full">
-        <h3><span class="badge compare-badge">RENDIMIENTO</span> ¿QUÉ ORIGEN DEVUELVE MÁS FOLLOWS? → ORDENADO POR TASA</h3>
-        <div class="chart-container" style="position:relative; min-height:200px;">
-          <canvas id="mutualityRate"></canvas>
-        </div>
-      </div>
-    </div>
-
+    <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">RENDIMIENTO</span> ¿QUÉ ORIGEN DEVUELVE MÁS FOLLOWS?</h3><div class="chart-container" style="position:relative;min-height:200px;"><canvas id="mutualityRate"></canvas></div></div></div>
     <div class="section-title">[RATIO POR ORIGEN]</div>
     <div class="chart-grid">
-      <div class="chart-card">
-        <h3><span class="badge compare-badge">COMPARATIVO</span> RATIO PROMEDIO POR ORIGEN</h3>
-        <div class="chart-container" style="position:relative; min-height:250px;">
-          <canvas id="avgRatioByOrigin"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <h3><span class="badge compare-badge">COMPARATIVO</span> RATIO MÁXIMO POR ORIGEN <span style="font-size:0.5rem;color:#737373;font-family:var(--font-mono);">· incluye @user</span></h3>
-        <div class="chart-container" style="position:relative; min-height:250px;">
-          <canvas id="maxRatioByOrigin"></canvas>
-        </div>
-      </div>
+      <div class="chart-card"><h3><span class="badge compare-badge">COMPARATIVO</span> RATIO PROMEDIO POR ORIGEN</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="avgRatioByOrigin"></canvas></div></div>
+      <div class="chart-card"><h3><span class="badge compare-badge">COMPARATIVO</span> RATIO MÁXIMO POR ORIGEN</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="maxRatioByOrigin"></canvas></div></div>
     </div>
-
     <div class="section-title">[MAX RATIO — MUTUAL vs NO MUTUAL]</div>
     <div class="versus-grid" id="versusGrid"></div>
-    <div class="chart-grid">
-      <div class="chart-card full">
-        <h3><span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> TOP RATIOS COMPARADOS → CON @USER</h3>
-        <div class="chart-container fixed-h"><canvas id="versusBar"></canvas></div>
-      </div>
-    </div>
-
+    <div class="chart-grid"><div class="chart-card full"><h3><span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> TOP RATIOS COMPARADOS</h3><div class="chart-container fixed-h"><canvas id="versusBar"></canvas></div></div></div>
     <div class="section-title">[USERNAME QUALITY — TOP 10]</div>
-    <div class="chart-grid">
-      <div class="chart-card full">
-        <h3><span class="badge mutual-badge">SCORE</span> MEJORES USERNAMES → menos letras + sin números/signos = mejor</h3>
-        <div class="uq-table-wrap" id="uqTable"></div>
-      </div>
-    </div>
-
+    <div class="chart-grid"><div class="chart-card full"><h3><span class="badge mutual-badge">SCORE</span> MEJORES USERNAMES</h3><div class="uq-table-wrap" id="uqTable"></div></div></div>
     <div class="section-title">[CORRELACIÓN — USERNAME SCORE vs RATIO]</div>
-    <div class="chart-grid">
-      <div class="chart-card full">
-        <h3><span class="badge compare-badge">SCATTER</span> ¿MEJOR USERNAME = MEJOR RATIO? → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> <span style="font-size:0.5rem;color:#737373;font-family:var(--font-mono);">· hover para @user</span></h3>
-        <div class="chart-container" style="height:420px;"><canvas id="scatterUqRatio"></canvas></div>
-      </div>
-    </div>
-
+    <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">SCATTER</span> ¿MEJOR USERNAME = MEJOR RATIO?</h3><div class="chart-container" style="height:420px;"><canvas id="scatterUqRatio"></canvas></div></div></div>
     <div class="section-title">[USERNAME SCORE PROMEDIO POR ORIGEN]</div>
-    <div class="chart-grid">
-      <div class="chart-card full">
-        <h3><span class="badge compare-badge">RANKING</span> ¿QUÉ ORIGEN TIENE LOS MEJORES USERNAMES? → ORDENADO POR SCORE PROMEDIO</h3>
-        <div class="chart-container" style="position:relative; min-height:250px;">
-          <canvas id="uqByOrigin"></canvas>
-        </div>
-      </div>
-    </div>
-
+    <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">RANKING</span> ¿QUÉ ORIGEN TIENE LOS MEJORES USERNAMES?</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="uqByOrigin"></canvas></div></div></div>
     <div class="section-title">[EL MEJOR USER — NOMBRE + RATIO]</div>
     <div class="best-user-grid" id="bestUserGrid"></div>
-
-    <div class="footer">
-      POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a>
-    </div>
+    <div class="footer">POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a></div>
   </div>
-
 <script>
-// ══════════════════════════════════════════
-// SNCTVM PALETTE
-// ══════════════════════════════════════════
-const PALETTE = [
-  '#E8FF00', '#FF3366', '#00D9FF', '#000000', '#737373',
-  '#B8CC00', '#CC2952', '#00AED4', '#333333', '#999999',
-  '#D4E600', '#FF6688', '#33E0FF', '#555555', '#AAAAAA'
-];
-const MUTUAL_COLOR = '#E8FF00';
-const MUTUAL_COLOR_A = '#E8FF0055';
-const GHOST_COLOR = '#FF3366';
-const GHOST_COLOR_A = '#FF336655';
+const PALETTE=['#E8FF00','#FF3366','#00D9FF','#000000','#737373','#B8CC00','#CC2952','#00AED4','#333333','#999999','#D4E600','#FF6688','#33E0FF','#555555','#AAAAAA'];
+const MC='#E8FF00',MA='#E8FF0055',GC='#FF3366',GA='#FF336655',SC='#00D9FF',SA='#00D9FF33';
+Chart.defaults.color='#737373';Chart.defaults.borderColor='#D4D4D4';Chart.defaults.font.family="'JetBrains Mono',monospace";Chart.defaults.font.size=10;
+Chart.defaults.plugins.legend.labels.padding=14;Chart.defaults.plugins.legend.labels.usePointStyle=true;Chart.defaults.plugins.legend.labels.pointStyle='rectRounded';
+const TT_BASE={backgroundColor:'#0A0A0A',titleColor:'#FAFAF9',bodyColor:'#FAFAF9',borderWidth:2,titleFont:{family:"'EB Garamond',serif",size:13},bodyFont:{family:"'JetBrains Mono',monospace",size:10}};
+function tt(bc){return{...TT_BASE,borderColor:bc};}
 
-// ══════════════════════════════════════════
-// CHART DEFAULTS
-// ══════════════════════════════════════════
-Chart.defaults.color = '#737373';
-Chart.defaults.borderColor = '#D4D4D4';
-Chart.defaults.font.family = "'JetBrains Mono', monospace";
-Chart.defaults.font.size = 10;
-Chart.defaults.plugins.legend.labels.padding = 14;
-Chart.defaults.plugins.legend.labels.usePointStyle = true;
-Chart.defaults.plugins.legend.labels.pointStyle = 'rectRounded';
+let globalSelfHistory=null;
 
-// ══════════════════════════════════════════
-// TOOLTIP PRESETS
-// ══════════════════════════════════════════
-const TT_BASE = {
-  backgroundColor: '#0A0A0A',
-  titleColor: '#FAFAF9',
-  bodyColor: '#FAFAF9',
-  borderWidth: 2,
-  titleFont: { family: "'EB Garamond', serif", size: 13 },
-  bodyFont: { family: "'JetBrains Mono', monospace", size: 10 }
-};
-function tt(borderColor) { return { ...TT_BASE, borderColor }; }
-
-// ══════════════════════════════════════════
 // FILE HANDLING
-// ══════════════════════════════════════════
-const fileInput = document.getElementById('fileInput');
-const dropArea = document.getElementById('dropArea');
+const fileInput=document.getElementById('fileInput'),dropArea=document.getElementById('dropArea');
+const dropAreaSelf=document.getElementById('dropAreaSelf'),fileInputSelf=document.getElementById('fileInputSelf');
+dropArea.addEventListener('dragover',e=>{e.preventDefault();dropArea.classList.add('dragover');});
+dropArea.addEventListener('dragleave',()=>dropArea.classList.remove('dragover'));
+dropArea.addEventListener('drop',e=>{e.preventDefault();dropArea.classList.remove('dragover');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);});
+fileInput.addEventListener('change',e=>{if(e.target.files.length)handleFile(e.target.files[0]);});
 
-dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
-dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
-dropArea.addEventListener('drop', e => {
-  e.preventDefault(); dropArea.classList.remove('dragover');
-  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener('change', e => { if (e.target.files.length) handleFile(e.target.files[0]); });
+function setupSelfUpload(dropEl,inputEl){
+  dropEl.addEventListener('dragover',e=>{e.preventDefault();dropEl.classList.add('dragover');});
+  dropEl.addEventListener('dragleave',()=>dropEl.classList.remove('dragover'));
+  dropEl.addEventListener('drop',e=>{e.preventDefault();dropEl.classList.remove('dragover');if(e.dataTransfer.files.length)handleSelfFile(e.dataTransfer.files[0]);});
+  inputEl.addEventListener('change',e=>{if(e.target.files.length)handleSelfFile(e.target.files[0]);});
+}
+setupSelfUpload(dropAreaSelf,fileInputSelf);
+const dASI=document.getElementById('dropAreaSelfInline'),fISI=document.getElementById('fileInputSelfInline');
+if(dASI&&fISI)setupSelfUpload(dASI,fISI);
 
-function handleFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const rows = parseCSV(e.target.result);
-    if (rows.length === 0) { alert('CSV vacío o formato inválido'); return; }
-    buildDashboard(rows);
-  };
-  reader.readAsText(file);
+function handleFile(file){
+  const r=new FileReader();
+  r.onload=e=>{const rows=parseCSV(e.target.result);if(!rows.length){alert('CSV vacío');return;}
+    dropArea.classList.add('loaded');dropAreaSelf.style.display='block';buildDashboard(rows);};
+  r.readAsText(file);
+}
+function handleSelfFile(file){
+  const r=new FileReader();
+  r.onload=e=>{const rows=parseSelfCSV(e.target.result);if(!rows.length){alert('self_history.csv vacío');return;}
+    globalSelfHistory=rows;buildSelfGrowth(rows);
+    dropAreaSelf.style.display='none';const il=document.getElementById('selfUploadInline');if(il)il.style.display='none';};
+  r.readAsText(file);
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim());
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const vals = lines[i].split(',');
-    if (vals.length < headers.length) continue;
-    const obj = {};
-    headers.forEach((h, idx) => obj[h] = vals[idx]?.trim() || '');
-    obj.mutual = obj.mutual === 'True' || obj.mutual === 'true' || obj.mutual === '1';
-    obj.profile_followers = parseInt(obj.profile_followers) || 0;
-    obj.profile_following = parseInt(obj.profile_following) || 0;
-    obj.profile_ratio = parseFloat(obj.profile_ratio) || 0;
-    obj.days_active = parseInt(obj.days_active) || 0;
-    rows.push(obj);
-  }
+function parseCSV(text){
+  const lines=text.trim().split('\n');if(lines.length<2)return[];
+  const headers=lines[0].split(',').map(h=>h.trim()),rows=[];
+  for(let i=1;i<lines.length;i++){const vals=lines[i].split(',');if(vals.length<headers.length)continue;
+    const obj={};headers.forEach((h,idx)=>obj[h]=vals[idx]?.trim()||'');
+    obj.mutual=obj.mutual==='True'||obj.mutual==='true'||obj.mutual==='1';
+    obj.profile_followers=parseInt(obj.profile_followers)||0;obj.profile_following=parseInt(obj.profile_following)||0;
+    obj.profile_ratio=parseFloat(obj.profile_ratio)||0;obj.days_active=parseInt(obj.days_active)||0;rows.push(obj);}
+  return rows;
+}
+function parseSelfCSV(text){
+  const lines=text.trim().split('\n');if(lines.length<2)return[];
+  const headers=lines[0].split(',').map(h=>h.trim()),rows=[];
+  for(let i=1;i<lines.length;i++){const vals=lines[i].split(',');if(vals.length<headers.length)continue;
+    const obj={};headers.forEach((h,idx)=>obj[h]=vals[idx]?.trim()||'');
+    obj.followers=parseInt(obj.followers)||0;obj.following=parseInt(obj.following)||0;obj.ratio=parseFloat(obj.ratio)||0;rows.push(obj);}
   return rows;
 }
 
-// ══════════════════════════════════════════
-// BUILD DASHBOARD
-// ══════════════════════════════════════════
-function buildDashboard(data) {
-  document.getElementById('uploadZone').style.display = 'none';
+function buildDashboard(data){
+  document.getElementById('uploadZone').style.display='none';
   document.getElementById('dashboard').classList.add('visible');
+  const selfRow=data.find(d=>d.status==='self');
+  const nd=data.filter(d=>d.status!=='self');
+  const active=nd.filter(d=>d.status==='active').filter(d=>d.origen&&d.origen!=='unknown'&&d.origen!=='@unknown');
+  const mutuals=active.filter(d=>d.mutual),ghosts=active.filter(d=>!d.mutual);
+  const totalHistoric=nd.length,cancelled=nd.filter(d=>d.status==='request_cancelled').length;
+  const avgRM=mutuals.length?(mutuals.reduce((s,d)=>s+d.profile_ratio,0)/mutuals.length).toFixed(2):'—';
+  const avgRG=ghosts.length?(ghosts.reduce((s,d)=>s+d.profile_ratio,0)/ghosts.length).toFixed(2):'—';
 
-  const active = data.filter(d => d.status === 'active')
-    .filter(d => d.origen && d.origen !== 'unknown' && d.origen !== '@unknown');
-  const mutuals = active.filter(d => d.mutual);
-  const ghosts = active.filter(d => !d.mutual);
-  const totalHistoric = data.length;
-  const cancelled = data.filter(d => d.status === 'request_cancelled').length;
+  if(selfRow){
+    const ss=document.getElementById('selfSection');ss.classList.add('visible');
+    document.getElementById('selfUsername').textContent=selfRow.username||'???';
+    if(!globalSelfHistory)document.getElementById('selfUploadInline').style.display='block';
+    const sh=document.getElementById('selfHero');
+    const diff=selfRow.profile_followers-selfRow.profile_following;
+    sh.innerHTML=[
+      {l:'Mis Followers',v:selfRow.profile_followers.toLocaleString()},
+      {l:'Mi Following',v:selfRow.profile_following.toLocaleString()},
+      {l:'Mi Ratio',v:(typeof selfRow.profile_ratio==='number'?selfRow.profile_ratio.toFixed(4):selfRow.profile_ratio)},
+      {l:'Diferencia',v:(diff>=0?'+':'')+diff}
+    ].map(s=>`<div class="stat-card self-card"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div></div>`).join('');
+  }
 
-  const avgRatioMutual = mutuals.length
-    ? (mutuals.reduce((s, d) => s + d.profile_ratio, 0) / mutuals.length).toFixed(2) : '—';
-  const avgRatioGhost = ghosts.length
-    ? (ghosts.reduce((s, d) => s + d.profile_ratio, 0) / ghosts.length).toFixed(2) : '—';
+  document.getElementById('statsBar').innerHTML=[
+    {l:'Total Histórico',v:totalHistoric,c:'info'},{l:'Activos',v:active.length,c:'info'},
+    {l:'Mutuals',v:mutuals.length,c:'mutual'},{l:'No Mutuals',v:ghosts.length,c:'ghost'},
+    {l:'Requests ✗',v:cancelled,c:'warn'},{l:'Ratio Avg Mutual',v:avgRM,c:'mutual'},
+    {l:'Ratio Avg Ghost',v:avgRG,c:'ghost'},{l:'Orígenes',v:new Set(active.map(d=>d.origen)).size,c:'info'}
+  ].map(s=>`<div class="stat-card ${s.c}"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div></div>`).join('');
 
-  // Stats bar
-  const statsBar = document.getElementById('statsBar');
-  const stats = [
-    { label: 'Total Histórico', value: totalHistoric, cls: 'info' },
-    { label: 'Activos', value: active.length, cls: 'info' },
-    { label: 'Mutuals', value: mutuals.length, cls: 'mutual' },
-    { label: 'No Mutuals', value: ghosts.length, cls: 'ghost' },
-    { label: 'Requests ✗', value: cancelled, cls: 'warn' },
-    { label: 'Ratio Avg Mutual', value: avgRatioMutual, cls: 'mutual' },
-    { label: 'Ratio Avg Ghost', value: avgRatioGhost, cls: 'ghost' },
-    { label: 'Orígenes', value: new Set(active.map(d => d.origen)).size, cls: 'info' },
-  ];
-  statsBar.innerHTML = stats.map(s => `
-    <div class="stat-card ${s.cls}">
-      <div class="stat-label">${s.label}</div>
-      <div class="stat-value">${s.value}</div>
-    </div>
-  `).join('');
-
-  // Pies
-  buildPie('pieMutuals', mutuals);
-  buildPie('pieGhosts', ghosts);
-
-  // Lines
-  buildLine('lineMutuals', mutuals, MUTUAL_COLOR, MUTUAL_COLOR_A);
-  buildLine('lineGhosts', ghosts, GHOST_COLOR, GHOST_COLOR_A);
-
-  // Bins
-  const binData = buildBinData(mutuals, ghosts);
-
-  // Absolute histograms
-  buildSingleHist('histMutuals', binData.labels, binData.mutualBins, MUTUAL_COLOR, MUTUAL_COLOR_A, 'Mutuals', 'FRECUENCIA');
-  buildSingleHist('histGhosts', binData.labels, binData.ghostBins, GHOST_COLOR, GHOST_COLOR_A, 'No Mutuals', 'FRECUENCIA');
-  buildPolygon('polyCompare', binData, false);
-
-  // Percentage histograms
-  const mutualTotal = binData.mutualBins.reduce((a, b) => a + b, 0);
-  const ghostTotal = binData.ghostBins.reduce((a, b) => a + b, 0);
-  const mutualPct = binData.mutualBins.map(v => mutualTotal > 0 ? parseFloat(((v / mutualTotal) * 100).toFixed(2)) : 0);
-  const ghostPct = binData.ghostBins.map(v => ghostTotal > 0 ? parseFloat(((v / ghostTotal) * 100).toFixed(2)) : 0);
-
-  buildSingleHist('histMutualsPct', binData.labels, mutualPct, MUTUAL_COLOR, MUTUAL_COLOR_A, 'Mutuals %', '% DEL GRUPO');
-  buildSingleHist('histGhostsPct', binData.labels, ghostPct, GHOST_COLOR, GHOST_COLOR_A, 'No Mutuals %', '% DEL GRUPO');
-  buildPolygon('polyComparePct', {
-    labels: binData.labels,
-    midpoints: binData.midpoints,
-    mutualBins: mutualPct,
-    ghostBins: ghostPct
-  }, true);
-
-  // Mutuality rate
-  buildMutualityRate('mutualityRate', active);
-
-  // Avg & max ratio by origin
-  buildAvgRatioByOrigin('avgRatioByOrigin', active);
-  buildMaxRatioByOrigin('maxRatioByOrigin', active);
-
-  // Versus: max ratio mutual vs ghost
-  buildVersus(mutuals, ghosts);
-
-  // Username quality top 10
-  buildUsernameQuality(active);
-
-  // Scatter: username score vs ratio
-  buildUqScatter(active);
-
-  // Avg username score by origin
-  buildUqByOrigin(active);
-
-  // Best user overall
-  buildBestUser(active);
+  buildPie('pieMutuals',mutuals);buildPie('pieGhosts',ghosts);
+  buildLine('lineMutuals',mutuals,MC,MA);buildLine('lineGhosts',ghosts,GC,GA);
+  const bd=buildBinData(mutuals,ghosts);
+  buildSingleHist('histMutuals',bd.labels,bd.mutualBins,MC,MA,'Mutuals','FRECUENCIA');
+  buildSingleHist('histGhosts',bd.labels,bd.ghostBins,GC,GA,'No Mutuals','FRECUENCIA');
+  buildPolygon('polyCompare',bd,false);
+  const mT=bd.mutualBins.reduce((a,b)=>a+b,0),gT=bd.ghostBins.reduce((a,b)=>a+b,0);
+  const mP=bd.mutualBins.map(v=>mT>0?parseFloat(((v/mT)*100).toFixed(2)):0);
+  const gP=bd.ghostBins.map(v=>gT>0?parseFloat(((v/gT)*100).toFixed(2)):0);
+  buildSingleHist('histMutualsPct',bd.labels,mP,MC,MA,'Mutuals %','% DEL GRUPO');
+  buildSingleHist('histGhostsPct',bd.labels,gP,GC,GA,'No Mutuals %','% DEL GRUPO');
+  buildPolygon('polyComparePct',{labels:bd.labels,midpoints:bd.midpoints,mutualBins:mP,ghostBins:gP},true);
+  buildMutualityRate('mutualityRate',active);
+  buildAvgRatioByOrigin('avgRatioByOrigin',active);buildMaxRatioByOrigin('maxRatioByOrigin',active);
+  buildVersus(mutuals,ghosts);buildUsernameQuality(active);buildUqScatter(active);buildUqByOrigin(active);buildBestUser(active);
 }
 
-// ══════════════════════════════════════════
+// SELF GROWTH
+function buildSelfGrowth(sd){
+  if(!sd||!sd.length)return;
+  const ss=document.getElementById('selfSection');ss.classList.add('visible');
+  const ue=document.getElementById('selfUsername');
+  if(ue.textContent==='???'&&sd[0].username)ue.textContent=sd[0].username;
+  const sorted=[...sd].sort((a,b)=>(a.timestamp||'').localeCompare(b.timestamp||''));
+  const labels=sorted.map(d=>{const dt=new Date(d.timestamp);return `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;});
+  const followers=sorted.map(d=>d.followers),following=sorted.map(d=>d.following),ratios=sorted.map(d=>d.ratio);
+
+  if(sorted.length>0){
+    const latest=sorted[sorted.length-1],first=sorted[0],growth=latest.followers-first.followers;
+    const he=document.getElementById('selfHero');
+    he.innerHTML=[
+      {l:'Mis Followers',v:latest.followers.toLocaleString()},
+      {l:'Mi Following',v:latest.following.toLocaleString()},
+      {l:'Mi Ratio',v:latest.ratio.toFixed(4)},
+      {l:`Crecimiento (${sorted.length} snaps)`,v:`${growth>=0?'+':''}${growth}`}
+    ].map(s=>`<div class="stat-card self-card"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div></div>`).join('');
+  }
+
+  // FOLLOWERS
+  let ch=Chart.getChart('selfFollowersLine');if(ch)ch.destroy();
+  new Chart(document.getElementById('selfFollowersLine'),{type:'line',data:{labels,datasets:[{
+    label:'Followers',data:followers,borderColor:SC,backgroundColor:SA,fill:true,tension:0.3,
+    pointRadius:sorted.length>30?2:5,pointHoverRadius:8,pointBackgroundColor:SC,pointBorderColor:'#000',pointBorderWidth:2,borderWidth:3
+  }]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    scales:{x:{grid:{color:'#E8E8E8'},ticks:{maxTicksLimit:15,font:{size:8},color:'#737373',maxRotation:45},border:{color:'#000',width:2}},
+      y:{grid:{color:'#E8E8E8'},title:{display:true,text:'FOLLOWERS',font:{size:10,weight:'600'},color:'#00D9FF'},border:{color:'#000',width:2}}},
+    plugins:{legend:{display:false},tooltip:{...tt(SC),callbacks:{
+      title:items=>`Snapshot #${items[0].dataIndex+1}`,
+      label:ctx=>{const s=sorted[ctx.dataIndex];const lines=[` followers: ${s.followers.toLocaleString()}`];
+        if(ctx.dataIndex>0){const prev=sorted[ctx.dataIndex-1];const diff=s.followers-prev.followers;lines.push(` cambio: ${diff>=0?'+':''}${diff}`);}return lines;}
+    }}}}});
+
+  // FOLLOWING
+  ch=Chart.getChart('selfFollowingLine');if(ch)ch.destroy();
+  new Chart(document.getElementById('selfFollowingLine'),{type:'line',data:{labels,datasets:[{
+    label:'Following',data:following,borderColor:MC,backgroundColor:MA,fill:true,tension:0.3,
+    pointRadius:sorted.length>30?2:4,pointHoverRadius:7,pointBackgroundColor:MC,pointBorderColor:'#000',pointBorderWidth:2,borderWidth:2
+  }]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    scales:{x:{grid:{color:'#E8E8E8'},ticks:{maxTicksLimit:12,font:{size:8},color:'#737373',maxRotation:45},border:{color:'#000',width:2}},
+      y:{grid:{color:'#E8E8E8'},title:{display:true,text:'FOLLOWING',font:{size:9},color:'#737373'},border:{color:'#000',width:2}}},
+    plugins:{legend:{display:false},tooltip:{...tt(MC),callbacks:{label:ctx=>` following: ${sorted[ctx.dataIndex].following.toLocaleString()}`}}}}});
+
+  // RATIO
+  ch=Chart.getChart('selfRatioLine');if(ch)ch.destroy();
+  new Chart(document.getElementById('selfRatioLine'),{type:'line',data:{labels,datasets:[{
+    label:'Ratio',data:ratios,borderColor:GC,backgroundColor:GA,fill:true,tension:0.3,
+    pointRadius:sorted.length>30?2:4,pointHoverRadius:7,pointBackgroundColor:GC,pointBorderColor:'#000',pointBorderWidth:2,borderWidth:2
+  }]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    scales:{x:{grid:{color:'#E8E8E8'},ticks:{maxTicksLimit:12,font:{size:8},color:'#737373',maxRotation:45},border:{color:'#000',width:2}},
+      y:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO',font:{size:9},color:'#737373'},border:{color:'#000',width:2}}},
+    plugins:{legend:{display:false},tooltip:{...tt(GC),callbacks:{label:ctx=>{const s=sorted[ctx.dataIndex];return ` ratio: ${s.ratio.toFixed(4)} (${s.followers}/${s.following})`;}}
+  }}}});
+}
+
 // PIE
-// ══════════════════════════════════════════
-function buildPie(canvasId, subset) {
-  const counts = {};
-  subset.forEach(d => { const o = d.origen || 'unknown'; counts[o] = (counts[o] || 0) + 1; });
-  const labels = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-  const values = labels.map(l => counts[l]);
-  const colors = labels.map((_, i) => PALETTE[i % PALETTE.length]);
-
-  new Chart(document.getElementById(canvasId), {
-    type: 'doughnut',
-    data: {
-      labels: labels.map(l => '@' + l),
-      datasets: [{ data: values, backgroundColor: colors, borderColor: '#000', borderWidth: 2, hoverBorderColor: '#E8FF00', hoverBorderWidth: 3 }]
-    },
-    options: {
-      responsive: true,
-      cutout: '58%',
-      plugins: {
-        legend: { position: 'bottom', labels: { padding: 10, font: { size: 9 }, color: '#737373' } },
-        tooltip: {
-          ...tt('#E8FF00'),
-          callbacks: {
-            label: ctx => {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              return ` ${ctx.raw} → ${((ctx.raw / total) * 100).toFixed(1)}%`;
-            }
-          }
-        }
-      }
-    }
-  });
+function buildPie(id,sub){
+  const c={};sub.forEach(d=>{const o=d.origen||'unknown';c[o]=(c[o]||0)+1;});
+  const l=Object.keys(c).sort((a,b)=>c[b]-c[a]),v=l.map(x=>c[x]),co=l.map((_,i)=>PALETTE[i%PALETTE.length]);
+  new Chart(document.getElementById(id),{type:'doughnut',data:{labels:l.map(x=>'@'+x),datasets:[{data:v,backgroundColor:co,borderColor:'#000',borderWidth:2,hoverBorderColor:'#E8FF00',hoverBorderWidth:3}]},
+    options:{responsive:true,cutout:'58%',plugins:{legend:{position:'bottom',labels:{padding:10,font:{size:9},color:'#737373'}},
+      tooltip:{...tt('#E8FF00'),callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return ` ${ctx.raw} → ${((ctx.raw/t)*100).toFixed(1)}%`;}}}}}});
 }
 
-// ══════════════════════════════════════════
 // LINE
-// ══════════════════════════════════════════
-function buildLine(canvasId, subset, color, colorA) {
-  const sorted = [...subset].filter(d => d.followed_at && d.profile_ratio > 0)
-    .sort((a, b) => a.followed_at.localeCompare(b.followed_at));
-  const labels = sorted.map(d => { const dt = new Date(d.followed_at); return `${dt.getMonth()+1}/${dt.getDate()}`; });
-  const ratios = sorted.map(d => d.profile_ratio);
-
-  new Chart(document.getElementById(canvasId), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Ratio', data: ratios, borderColor: color, backgroundColor: colorA,
-        fill: true, tension: 0.3,
-        pointRadius: sorted.length > 50 ? 0 : 2, pointHoverRadius: 5,
-        pointBackgroundColor: color, pointBorderColor: '#000', pointBorderWidth: 1, borderWidth: 2
-      }]
-    },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, ticks: { maxTicksLimit: 12, font: { size: 8 }, color: '#737373' }, border: { color: '#000', width: 2 } },
-        y: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'RATIO', font: { size: 9 }, color: '#737373' }, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          ...tt(color),
-          callbacks: {
-            title: items => sorted[items[0].dataIndex].username,
-            label: ctx => ` ratio: ${ctx.raw} → ${sorted[ctx.dataIndex].profile_followers}/${sorted[ctx.dataIndex].profile_following}`
-          }
-        }
-      }
-    }
-  });
+function buildLine(id,sub,color,colorA){
+  const sorted=[...sub].filter(d=>d.followed_at&&d.profile_ratio>0).sort((a,b)=>a.followed_at.localeCompare(b.followed_at));
+  const labels=sorted.map(d=>{const dt=new Date(d.followed_at);return `${dt.getMonth()+1}/${dt.getDate()}`;});
+  const ratios=sorted.map(d=>d.profile_ratio);
+  new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:[{label:'Ratio',data:ratios,borderColor:color,backgroundColor:colorA,fill:true,tension:0.3,pointRadius:sorted.length>50?0:2,pointHoverRadius:5,pointBackgroundColor:color,pointBorderColor:'#000',pointBorderWidth:1,borderWidth:2}]},
+    options:{responsive:true,interaction:{mode:'index',intersect:false},scales:{x:{grid:{color:'#E8E8E8'},ticks:{maxTicksLimit:12,font:{size:8},color:'#737373'},border:{color:'#000',width:2}},y:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO',font:{size:9},color:'#737373'},border:{color:'#000',width:2}}},
+      plugins:{legend:{display:false},tooltip:{...tt(color),callbacks:{title:items=>sorted[items[0].dataIndex].username,label:ctx=>` ratio: ${ctx.raw} → ${sorted[ctx.dataIndex].profile_followers}/${sorted[ctx.dataIndex].profile_following}`}}}}});
 }
 
-// ══════════════════════════════════════════
 // BIN DATA
-// ══════════════════════════════════════════
-function buildBinData(mutuals, ghosts) {
-  const allRatios = [...mutuals, ...ghosts].map(d => d.profile_ratio).filter(r => r > 0);
-  if (allRatios.length === 0) return { labels: [], mutualBins: [], ghostBins: [], midpoints: [] };
-  const maxR = Math.min(Math.ceil(Math.max(...allRatios)), 20);
-  const binSize = maxR <= 5 ? 0.5 : 1;
-  const binCount = Math.ceil(maxR / binSize) + 1;
-  const binLabels = [], midpoints = [];
-  const mutualBins = new Array(binCount).fill(0);
-  const ghostBins = new Array(binCount).fill(0);
-  for (let i = 0; i < binCount; i++) {
-    const lo = i * binSize, hi = (i + 1) * binSize;
-    binLabels.push(`${lo.toFixed(1)}-${hi.toFixed(1)}`);
-    midpoints.push(((lo + hi) / 2).toFixed(2));
-  }
-  function toBin(r) { return Math.min(Math.floor(r / binSize), binCount - 1); }
-  mutuals.filter(d => d.profile_ratio > 0).forEach(d => mutualBins[toBin(d.profile_ratio)]++);
-  ghosts.filter(d => d.profile_ratio > 0).forEach(d => ghostBins[toBin(d.profile_ratio)]++);
-  return { labels: binLabels, mutualBins, ghostBins, midpoints };
+function buildBinData(m,g){
+  const all=[...m,...g].map(d=>d.profile_ratio).filter(r=>r>0);if(!all.length)return{labels:[],mutualBins:[],ghostBins:[],midpoints:[]};
+  const maxR=Math.min(Math.ceil(Math.max(...all)),20),bs=maxR<=5?0.5:1,bc=Math.ceil(maxR/bs)+1;
+  const bl=[],mp=[],mb=new Array(bc).fill(0),gb=new Array(bc).fill(0);
+  for(let i=0;i<bc;i++){const lo=i*bs,hi=(i+1)*bs;bl.push(`${lo.toFixed(1)}-${hi.toFixed(1)}`);mp.push(((lo+hi)/2).toFixed(2));}
+  function toBin(r){return Math.min(Math.floor(r/bs),bc-1);}
+  m.filter(d=>d.profile_ratio>0).forEach(d=>mb[toBin(d.profile_ratio)]++);
+  g.filter(d=>d.profile_ratio>0).forEach(d=>gb[toBin(d.profile_ratio)]++);
+  return{labels:bl,mutualBins:mb,ghostBins:gb,midpoints:mp};
 }
 
-// ══════════════════════════════════════════
-// SINGLE HISTOGRAM (absolute or %)
-// ══════════════════════════════════════════
-function buildSingleHist(canvasId, labels, bins, color, colorA, label, yLabel) {
-  const canvas = document.getElementById(canvasId);
-  if (labels.length === 0) {
-    canvas.parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
-    return;
-  }
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label, data: bins, backgroundColor: colorA, borderColor: color, borderWidth: 2, borderRadius: 0, barPercentage: 1.0, categoryPercentage: 0.92 }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'RATIO', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 8 }, maxRotation: 45, color: '#737373' }, border: { color: '#000', width: 2 } },
-        y: { grid: { color: '#E8E8E8' }, title: { display: true, text: yLabel, font: { size: 9 }, color: '#737373' }, beginAtZero: true, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          ...tt(color),
-          callbacks: {
-            label: ctx => yLabel.includes('%') ? ` ${ctx.raw.toFixed(1)}%` : ` ${ctx.raw}`
-          }
-        }
-      }
-    }
-  });
+function buildSingleHist(id,labels,bins,color,colorA,label,yLabel){
+  const canvas=document.getElementById(id);
+  if(!labels.length){canvas.parentElement.innerHTML='<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';return;}
+  new Chart(canvas,{type:'bar',data:{labels,datasets:[{label,data:bins,backgroundColor:colorA,borderColor:color,borderWidth:2,barPercentage:1.0,categoryPercentage:0.92}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO',font:{size:9},color:'#737373'},ticks:{font:{size:8},maxRotation:45,color:'#737373'},border:{color:'#000',width:2}},
+      y:{grid:{color:'#E8E8E8'},title:{display:true,text:yLabel,font:{size:9},color:'#737373'},beginAtZero:true,border:{color:'#000',width:2}}},
+      plugins:{legend:{display:false},tooltip:{...tt(color),callbacks:{label:ctx=>yLabel.includes('%')?` ${ctx.raw.toFixed(1)}%`:` ${ctx.raw}`}}}}});
 }
 
-// ══════════════════════════════════════════
-// FREQUENCY POLYGON (absolute or %)
-// ══════════════════════════════════════════
-function buildPolygon(canvasId, binData, isPct) {
-  const canvas = document.getElementById(canvasId);
-  if (binData.labels.length === 0) {
-    canvas.parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS PARA POLÍGONO]</p>';
-    return;
-  }
-  const yLabel = isPct ? '% DEL GRUPO' : 'FRECUENCIA';
-  new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: binData.midpoints,
-      datasets: [
-        {
-          label: 'MUTUALS', data: binData.mutualBins, borderColor: MUTUAL_COLOR, backgroundColor: MUTUAL_COLOR_A,
-          fill: true, tension: 0.25, pointRadius: 4, pointHoverRadius: 7,
-          pointBackgroundColor: MUTUAL_COLOR, pointBorderColor: '#000', pointBorderWidth: 2, borderWidth: 3
-        },
-        {
-          label: 'NO MUTUALS', data: binData.ghostBins, borderColor: GHOST_COLOR, backgroundColor: GHOST_COLOR_A,
-          fill: true, tension: 0.25, pointRadius: 4, pointHoverRadius: 7,
-          pointBackgroundColor: GHOST_COLOR, pointBorderColor: '#000', pointBorderWidth: 2, borderWidth: 3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'MARCA DE CLASE (RATIO)', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 8 }, maxRotation: 45, color: '#737373' }, border: { color: '#000', width: 2 } },
-        y: { grid: { color: '#E8E8E8' }, title: { display: true, text: yLabel, font: { size: 9 }, color: '#737373' }, beginAtZero: true, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { position: 'top', labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true, pointStyle: 'rect' } },
-        tooltip: {
-          ...tt('#FFFFFF'),
-          callbacks: {
-            title: items => `RATIO ≈ ${items[0].label}`,
-            label: ctx => isPct ? ` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` : ` ${ctx.dataset.label}: ${ctx.raw} usuarios`
-          }
-        }
-      }
-    }
-  });
+function buildPolygon(id,bd,isPct){
+  const canvas=document.getElementById(id);
+  if(!bd.labels.length){canvas.parentElement.innerHTML='<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';return;}
+  const yL=isPct?'% DEL GRUPO':'FRECUENCIA';
+  new Chart(canvas,{type:'line',data:{labels:bd.midpoints,datasets:[
+    {label:'MUTUALS',data:bd.mutualBins,borderColor:MC,backgroundColor:MA,fill:true,tension:0.25,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:MC,pointBorderColor:'#000',pointBorderWidth:2,borderWidth:3},
+    {label:'NO MUTUALS',data:bd.ghostBins,borderColor:GC,backgroundColor:GA,fill:true,tension:0.25,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:GC,pointBorderColor:'#000',pointBorderWidth:2,borderWidth:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'MARCA DE CLASE',font:{size:9},color:'#737373'},ticks:{font:{size:8},maxRotation:45,color:'#737373'},border:{color:'#000',width:2}},
+      y:{grid:{color:'#E8E8E8'},title:{display:true,text:yL,font:{size:9},color:'#737373'},beginAtZero:true,border:{color:'#000',width:2}}},
+    plugins:{legend:{position:'top',labels:{font:{size:10,weight:'600'},padding:20,color:'#737373',usePointStyle:true,pointStyle:'rect'}},
+      tooltip:{...tt('#FFF'),callbacks:{title:items=>`RATIO ≈ ${items[0].label}`,label:ctx=>isPct?` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`:` ${ctx.dataset.label}: ${ctx.raw} usuarios`}}}}});
 }
 
-// ══════════════════════════════════════════
-// AVG RATIO BY ORIGIN
-// ══════════════════════════════════════════
-function buildAvgRatioByOrigin(canvasId, active) {
-  const byOrigen = {};
-  active.forEach(d => {
-    const o = d.origen || 'unknown';
-    if (!byOrigen[o]) byOrigen[o] = { sum: 0, count: 0 };
-    if (d.profile_ratio > 0) { byOrigen[o].sum += d.profile_ratio; byOrigen[o].count++; }
-  });
-  const origins = Object.keys(byOrigen)
-    .map(o => ({ name: o, avg: byOrigen[o].count > 0 ? byOrigen[o].sum / byOrigen[o].count : 0, count: byOrigen[o].count }))
-    .filter(o => o.count > 0).sort((a, b) => b.avg - a.avg);
-  if (origins.length === 0) { document.getElementById(canvasId).parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>'; return; }
-
-  const canvas = document.getElementById(canvasId);
-  const calcHeight = Math.max(250, origins.length * 38 + 80);
-  canvas.parentElement.style.minHeight = calcHeight + 'px';
-  canvas.style.height = calcHeight + 'px';
-
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: origins.map(o => `@${o.name}`),
-      datasets: [{ label: 'Ratio Promedio', data: origins.map(o => parseFloat(o.avg.toFixed(3))), backgroundColor: origins.map((_, i) => PALETTE[i % PALETTE.length]), borderColor: '#000', borderWidth: 2, barPercentage: 0.72, categoryPercentage: 0.88 }]
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'RATIO PROMEDIO', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 9 }, color: '#737373' }, border: { color: '#000', width: 2 }, beginAtZero: true },
-        y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, color: '#000', padding: 8 }, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { ...tt('#FFF'), callbacks: { label: ctx => { const o = origins[ctx.dataIndex]; return ` avg: ${o.avg.toFixed(3)}  (n=${o.count})`; } } }
-      }
-    }
-  });
+function buildAvgRatioByOrigin(id,active){
+  const bo={};active.forEach(d=>{const o=d.origen||'unknown';if(!bo[o])bo[o]={sum:0,count:0};if(d.profile_ratio>0){bo[o].sum+=d.profile_ratio;bo[o].count++;}});
+  const origins=Object.keys(bo).map(o=>({name:o,avg:bo[o].count>0?bo[o].sum/bo[o].count:0,count:bo[o].count})).filter(o=>o.count>0).sort((a,b)=>b.avg-a.avg);
+  if(!origins.length){document.getElementById(id).parentElement.innerHTML='<p style="color:#737373;text-align:center;padding:2rem;">[SIN DATOS]</p>';return;}
+  const canvas=document.getElementById(id),ch=Math.max(250,origins.length*38+80);canvas.parentElement.style.minHeight=ch+'px';canvas.style.height=ch+'px';
+  new Chart(canvas,{type:'bar',data:{labels:origins.map(o=>`@${o.name}`),datasets:[{label:'Ratio Promedio',data:origins.map(o=>parseFloat(o.avg.toFixed(3))),backgroundColor:origins.map((_,i)=>PALETTE[i%PALETTE.length]),borderColor:'#000',borderWidth:2,barPercentage:0.72,categoryPercentage:0.88}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO PROMEDIO',font:{size:9},color:'#737373'},border:{color:'#000',width:2},beginAtZero:true},
+      y:{grid:{display:false},ticks:{font:{size:10,weight:'500'},color:'#000',padding:8},border:{color:'#000',width:2}}},
+      plugins:{legend:{display:false},tooltip:{...tt('#FFF'),callbacks:{label:ctx=>{const o=origins[ctx.dataIndex];return ` avg: ${o.avg.toFixed(3)} (n=${o.count})`;}}
+  }}}});
 }
 
-// ══════════════════════════════════════════
-// MAX RATIO BY ORIGIN
-// ══════════════════════════════════════════
-function buildMaxRatioByOrigin(canvasId, active) {
-  const byOrigen = {};
-  active.forEach(d => {
-    const o = d.origen || 'unknown';
-    if (!byOrigen[o]) byOrigen[o] = { max: 0, user: '—', count: 0 };
-    if (d.profile_ratio > 0) {
-      byOrigen[o].count++;
-      if (d.profile_ratio > byOrigen[o].max) { byOrigen[o].max = d.profile_ratio; byOrigen[o].user = d.username || d.user || '—'; }
-    }
-  });
-  const origins = Object.keys(byOrigen)
-    .map(o => ({ name: o, max: byOrigen[o].max, user: byOrigen[o].user, count: byOrigen[o].count }))
-    .filter(o => o.count > 0).sort((a, b) => b.max - a.max);
-  if (origins.length === 0) { document.getElementById(canvasId).parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>'; return; }
-
-  const canvas = document.getElementById(canvasId);
-  const calcHeight = Math.max(250, origins.length * 38 + 80);
-  canvas.parentElement.style.minHeight = calcHeight + 'px';
-  canvas.style.height = calcHeight + 'px';
-
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: origins.map(o => `@${o.name}`),
-      datasets: [{ label: 'Ratio Máximo', data: origins.map(o => parseFloat(o.max.toFixed(3))), backgroundColor: origins.map((_, i) => `rgba(255,51,102,${(1 - (i / origins.length) * 0.55).toFixed(2)})`), borderColor: '#000', borderWidth: 2, barPercentage: 0.72, categoryPercentage: 0.88 }]
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'RATIO MÁXIMO', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 9 }, color: '#737373' }, border: { color: '#000', width: 2 }, beginAtZero: true },
-        y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, color: '#000', padding: 8 }, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { ...tt('#FF3366'), callbacks: { label: ctx => ` max: ${origins[ctx.dataIndex].max.toFixed(3)}`, afterLabel: ctx => ` @${origins[ctx.dataIndex].user}` } }
-      }
-    }
-  });
+function buildMaxRatioByOrigin(id,active){
+  const bo={};active.forEach(d=>{const o=d.origen||'unknown';if(!bo[o])bo[o]={max:0,user:'—',count:0};if(d.profile_ratio>0){bo[o].count++;if(d.profile_ratio>bo[o].max){bo[o].max=d.profile_ratio;bo[o].user=d.username||'—';}}});
+  const origins=Object.keys(bo).map(o=>({name:o,max:bo[o].max,user:bo[o].user,count:bo[o].count})).filter(o=>o.count>0).sort((a,b)=>b.max-a.max);
+  if(!origins.length){document.getElementById(id).parentElement.innerHTML='<p style="color:#737373;text-align:center;padding:2rem;">[SIN DATOS]</p>';return;}
+  const canvas=document.getElementById(id),ch=Math.max(250,origins.length*38+80);canvas.parentElement.style.minHeight=ch+'px';canvas.style.height=ch+'px';
+  new Chart(canvas,{type:'bar',data:{labels:origins.map(o=>`@${o.name}`),datasets:[{label:'Ratio Máximo',data:origins.map(o=>parseFloat(o.max.toFixed(3))),
+    backgroundColor:origins.map((_,i)=>`rgba(255,51,102,${(1-(i/origins.length)*0.55).toFixed(2)})`),borderColor:'#000',borderWidth:2,barPercentage:0.72,categoryPercentage:0.88}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO MÁXIMO',font:{size:9},color:'#737373'},border:{color:'#000',width:2},beginAtZero:true},
+      y:{grid:{display:false},ticks:{font:{size:10,weight:'500'},color:'#000',padding:8},border:{color:'#000',width:2}}},
+      plugins:{legend:{display:false},tooltip:{...tt('#FF3366'),callbacks:{label:ctx=>` max: ${origins[ctx.dataIndex].max.toFixed(3)}`,afterLabel:ctx=>` @${origins[ctx.dataIndex].user}`}}}}});
 }
 
-// ══════════════════════════════════════════
-// MUTUALITY RATE
-// ══════════════════════════════════════════
-function buildMutualityRate(canvasId, active) {
-  const byOrigen = {};
-  active.forEach(d => {
-    const o = d.origen || 'unknown';
-    if (!byOrigen[o]) byOrigen[o] = { mutuals: 0, ghosts: 0, total: 0 };
-    byOrigen[o].total++;
-    if (d.mutual) byOrigen[o].mutuals++; else byOrigen[o].ghosts++;
-  });
-  const origins = Object.keys(byOrigen)
-    .map(o => ({ name: o, ...byOrigen[o], rate: byOrigen[o].total > 0 ? (byOrigen[o].mutuals / byOrigen[o].total) * 100 : 0 }))
-    .filter(o => o.total >= 1).sort((a, b) => b.rate - a.rate);
-  if (origins.length === 0) { document.getElementById(canvasId).parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>'; return; }
-
-  const canvas = document.getElementById(canvasId);
-  const calcHeight = Math.max(250, origins.length * 36 + 80);
-  canvas.parentElement.style.minHeight = calcHeight + 'px';
-  canvas.style.height = calcHeight + 'px';
-
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: origins.map(o => `@${o.name}`),
-      datasets: [
-        { label: 'MUTUALS', data: origins.map(o => o.mutuals), backgroundColor: MUTUAL_COLOR, borderColor: '#000', borderWidth: 2, barPercentage: 0.75, categoryPercentage: 0.85 },
-        { label: 'NO MUTUALS', data: origins.map(o => o.ghosts), backgroundColor: GHOST_COLOR, borderColor: '#000', borderWidth: 2, barPercentage: 0.75, categoryPercentage: 0.85 }
-      ]
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { stacked: true, grid: { color: '#E8E8E8' }, title: { display: true, text: 'USUARIOS', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 9 }, color: '#737373', stepSize: 1 }, border: { color: '#000', width: 2 } },
-        y: { stacked: true, grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, color: '#000', padding: 8 }, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { position: 'top', labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true, pointStyle: 'rect' } },
-        tooltip: { ...tt('#FFF'), callbacks: { afterBody: items => { const o = origins[items[0].dataIndex]; return `\n→ TASA: ${o.rate.toFixed(1)}% (${o.mutuals}/${o.total})`; } } }
-      }
-    }
-  });
+function buildMutualityRate(id,active){
+  const bo={};active.forEach(d=>{const o=d.origen||'unknown';if(!bo[o])bo[o]={mutuals:0,ghosts:0,total:0};bo[o].total++;if(d.mutual)bo[o].mutuals++;else bo[o].ghosts++;});
+  const origins=Object.keys(bo).map(o=>({name:o,...bo[o],rate:bo[o].total>0?(bo[o].mutuals/bo[o].total)*100:0})).filter(o=>o.total>=1).sort((a,b)=>b.rate-a.rate);
+  if(!origins.length){document.getElementById(id).parentElement.innerHTML='<p style="color:#737373;text-align:center;padding:2rem;">[SIN DATOS]</p>';return;}
+  const canvas=document.getElementById(id),ch=Math.max(250,origins.length*36+80);canvas.parentElement.style.minHeight=ch+'px';canvas.style.height=ch+'px';
+  new Chart(canvas,{type:'bar',data:{labels:origins.map(o=>`@${o.name}`),datasets:[
+    {label:'MUTUALS',data:origins.map(o=>o.mutuals),backgroundColor:MC,borderColor:'#000',borderWidth:2,barPercentage:0.75,categoryPercentage:0.85},
+    {label:'NO MUTUALS',data:origins.map(o=>o.ghosts),backgroundColor:GC,borderColor:'#000',borderWidth:2,barPercentage:0.75,categoryPercentage:0.85}
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{color:'#E8E8E8'},title:{display:true,text:'USUARIOS',font:{size:9},color:'#737373'},ticks:{stepSize:1},border:{color:'#000',width:2}},
+    y:{stacked:true,grid:{display:false},ticks:{font:{size:10,weight:'500'},color:'#000',padding:8},border:{color:'#000',width:2}}},
+    plugins:{legend:{position:'top',labels:{font:{size:10,weight:'600'},padding:20,color:'#737373',usePointStyle:true,pointStyle:'rect'}},
+      tooltip:{...tt('#FFF'),callbacks:{afterBody:items=>{const o=origins[items[0].dataIndex];return `\n→ TASA: ${o.rate.toFixed(1)}% (${o.mutuals}/${o.total})`;}}
+  }}}});
 }
 
-// ══════════════════════════════════════════
-// VERSUS: MAX RATIO MUTUAL vs GHOST
-// ══════════════════════════════════════════
-function buildVersus(mutuals, ghosts) {
-  // Find top N from each group
-  const topN = 10;
-  const topMutuals = [...mutuals].filter(d => d.profile_ratio > 0)
-    .sort((a, b) => b.profile_ratio - a.profile_ratio).slice(0, topN);
-  const topGhosts = [...ghosts].filter(d => d.profile_ratio > 0)
-    .sort((a, b) => b.profile_ratio - a.profile_ratio).slice(0, topN);
-
-  // Build versus cards for #1 vs #1
-  const m1 = topMutuals[0] || null;
-  const g1 = topGhosts[0] || null;
-
-  const versusGrid = document.getElementById('versusGrid');
-  versusGrid.innerHTML = `
-    <div class="versus-card mutual-side">
-      <div class="vs-label">TOP MUTUAL</div>
-      <div class="vs-user">@${m1 ? (m1.username || m1.user || '—') : '—'}</div>
-      <div class="vs-ratio" style="color:#555500;">${m1 ? m1.profile_ratio.toFixed(3) : '—'}</div>
-      <div class="vs-detail">${m1 ? `${m1.profile_followers.toLocaleString()} seg / ${m1.profile_following.toLocaleString()} sig` : '—'}</div>
-      <div class="vs-detail" style="margin-top:0.3rem;">origen: @${m1 ? (m1.origen || '?') : '—'}</div>
-    </div>
+function buildVersus(mutuals,ghosts){
+  const tN=10;const tM=[...mutuals].filter(d=>d.profile_ratio>0).sort((a,b)=>b.profile_ratio-a.profile_ratio).slice(0,tN);
+  const tG=[...ghosts].filter(d=>d.profile_ratio>0).sort((a,b)=>b.profile_ratio-a.profile_ratio).slice(0,tN);
+  const m1=tM[0]||null,g1=tG[0]||null;
+  document.getElementById('versusGrid').innerHTML=`
+    <div class="versus-card mutual-side"><div class="vs-label">TOP MUTUAL</div><div class="vs-user">@${m1?(m1.username||'—'):'—'}</div>
+      <div class="vs-ratio" style="color:#555500;">${m1?m1.profile_ratio.toFixed(3):'—'}</div>
+      <div class="vs-detail">${m1?`${m1.profile_followers.toLocaleString()} / ${m1.profile_following.toLocaleString()}`:'—'}</div></div>
     <div class="versus-divider"><span>vs</span></div>
-    <div class="versus-card ghost-side">
-      <div class="vs-label">TOP NO MUTUAL</div>
-      <div class="vs-user">@${g1 ? (g1.username || g1.user || '—') : '—'}</div>
-      <div class="vs-ratio" style="color:#990033;">${g1 ? g1.profile_ratio.toFixed(3) : '—'}</div>
-      <div class="vs-detail">${g1 ? `${g1.profile_followers.toLocaleString()} seg / ${g1.profile_following.toLocaleString()} sig` : '—'}</div>
-      <div class="vs-detail" style="margin-top:0.3rem;">origen: @${g1 ? (g1.origen || '?') : '—'}</div>
-    </div>
-  `;
-
-  // Build grouped bar chart: top N mutuals vs top N ghosts
-  const maxLen = Math.max(topMutuals.length, topGhosts.length);
-  const labels = [];
-  const mutualData = [], ghostData = [];
-  const mutualUsers = [], ghostUsers = [];
-
-  for (let i = 0; i < maxLen; i++) {
-    labels.push(`#${i + 1}`);
-    if (topMutuals[i]) {
-      mutualData.push(topMutuals[i].profile_ratio);
-      mutualUsers.push(topMutuals[i].username || topMutuals[i].user || '—');
-    } else {
-      mutualData.push(0);
-      mutualUsers.push('—');
-    }
-    if (topGhosts[i]) {
-      ghostData.push(topGhosts[i].profile_ratio);
-      ghostUsers.push(topGhosts[i].username || topGhosts[i].user || '—');
-    } else {
-      ghostData.push(0);
-      ghostUsers.push('—');
-    }
-  }
-
-  const canvas = document.getElementById('versusBar');
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'MUTUAL',
-          data: mutualData,
-          backgroundColor: MUTUAL_COLOR,
-          borderColor: '#000',
-          borderWidth: 2,
-          barPercentage: 0.8,
-          categoryPercentage: 0.75
-        },
-        {
-          label: 'NO MUTUAL',
-          data: ghostData,
-          backgroundColor: GHOST_COLOR,
-          borderColor: '#000',
-          borderWidth: 2,
-          barPercentage: 0.8,
-          categoryPercentage: 0.75
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          grid: { color: '#E8E8E8' },
-          title: { display: true, text: 'RANKING', font: { size: 9 }, color: '#737373' },
-          ticks: { font: { size: 10, weight: '600' }, color: '#000' },
-          border: { color: '#000', width: 2 }
-        },
-        y: {
-          grid: { color: '#E8E8E8' },
-          title: { display: true, text: 'RATIO', font: { size: 9 }, color: '#737373' },
-          beginAtZero: true,
-          border: { color: '#000', width: 2 }
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true, pointStyle: 'rect' }
-        },
-        tooltip: {
-          ...tt('#FFF'),
-          callbacks: {
-            title: items => `Puesto ${items[0].label}`,
-            label: ctx => {
-              const isMutual = ctx.datasetIndex === 0;
-              const user = isMutual ? mutualUsers[ctx.dataIndex] : ghostUsers[ctx.dataIndex];
-              return ` ${ctx.dataset.label}: ${ctx.raw.toFixed(3)} → @${user}`;
-            }
-          }
-        }
-      }
-    }
-  });
+    <div class="versus-card ghost-side"><div class="vs-label">TOP NO MUTUAL</div><div class="vs-user">@${g1?(g1.username||'—'):'—'}</div>
+      <div class="vs-ratio" style="color:#990033;">${g1?g1.profile_ratio.toFixed(3):'—'}</div>
+      <div class="vs-detail">${g1?`${g1.profile_followers.toLocaleString()} / ${g1.profile_following.toLocaleString()}`:'—'}</div></div>`;
+  const maxLen=Math.max(tM.length,tG.length),labels=[],mD=[],gD=[],mU=[],gU=[];
+  for(let i=0;i<maxLen;i++){labels.push(`#${i+1}`);mD.push(tM[i]?tM[i].profile_ratio:0);gD.push(tG[i]?tG[i].profile_ratio:0);mU.push(tM[i]?tM[i].username:'—');gU.push(tG[i]?tG[i].username:'—');}
+  new Chart(document.getElementById('versusBar'),{type:'bar',data:{labels,datasets:[
+    {label:'MUTUAL',data:mD,backgroundColor:MC,borderColor:'#000',borderWidth:2,barPercentage:0.8,categoryPercentage:0.75},
+    {label:'NO MUTUAL',data:gD,backgroundColor:GC,borderColor:'#000',borderWidth:2,barPercentage:0.8,categoryPercentage:0.75}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},ticks:{font:{size:10,weight:'600'},color:'#000'},border:{color:'#000',width:2}},
+    y:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO',font:{size:9},color:'#737373'},beginAtZero:true,border:{color:'#000',width:2}}},
+    plugins:{legend:{position:'top',labels:{font:{size:10,weight:'600'},padding:20,color:'#737373',usePointStyle:true,pointStyle:'rect'}},
+      tooltip:{...tt('#FFF'),callbacks:{title:items=>`Puesto ${items[0].label}`,label:ctx=>{const iM=ctx.datasetIndex===0;const u=iM?mU[ctx.dataIndex]:gU[ctx.dataIndex];return ` ${ctx.dataset.label}: ${ctx.raw.toFixed(3)} → @${u}`;}}
+  }}}});
 }
 
-// ══════════════════════════════════════════
-// USERNAME QUALITY SCORE
-// ══════════════════════════════════════════
-// Score = 100 - penalties
-//   length:    3 pts per character
-//   digit:     5 pts per digit
-//   sign:      5 pts per sign (. - _ etc)
-//   uncommon:  1 pt per y/z/w
-//   x:         2 pts per x
-//   repeat:    1 pt per consecutive repeated letter
-function scoreUsername(username) {
-  const u = (username || '').toLowerCase();
-  const len = u.length;
-  const digits = (u.match(/[0-9]/g) || []).length;
-  const signs = (u.match(/[^a-z0-9]/g) || []).length;
-  const uncommon = (u.match(/[ywz]/g) || []).length;
-  const xCount = (u.match(/x/g) || []).length;
-  // repeated consecutive letters: "hoola" → 1 repeat (oo)
-  let repeats = 0;
-  for (let i = 1; i < u.length; i++) { if (u[i] === u[i - 1] && /[a-z]/.test(u[i])) repeats++; }
-  const lenPenalty = len * 3;
-  const digitPenalty = digits * 5;
-  const signPenalty = signs * 5;
-  const uncommonPenalty = uncommon * 1;
-  const xPenalty = xCount * 2;
-  const repeatPenalty = repeats * 1;
-  const total = lenPenalty + digitPenalty + signPenalty + uncommonPenalty + xPenalty + repeatPenalty;
-  const score = Math.max(0, Math.min(100, 100 - total));
-  return { score, len, digits, signs, uncommon, xCount, repeats, lenPenalty, digitPenalty, signPenalty, uncommonPenalty, xPenalty, repeatPenalty };
+function scoreUsername(u){u=(u||'').toLowerCase();const len=u.length,dig=(u.match(/[0-9]/g)||[]).length,sig=(u.match(/[^a-z0-9]/g)||[]).length,unc=(u.match(/[ywz]/g)||[]).length,xC=(u.match(/x/g)||[]).length;
+  let rep=0;for(let i=1;i<u.length;i++)if(u[i]===u[i-1]&&/[a-z]/.test(u[i]))rep++;
+  const lP=len*3,dP=dig*5,sP=sig*5,uP=unc*1,xP=xC*2,rP=rep*1,tot=lP+dP+sP+uP+xP+rP;
+  return{score:Math.max(0,Math.min(100,100-tot)),lenPenalty:lP,digitPenalty:dP,signPenalty:sP,uncommonPenalty:uP,xPenalty:xP,repeatPenalty:rP};}
+
+function buildUsernameQuality(active){
+  const seen=new Set(),scored=[];
+  active.forEach(d=>{const u=d.username||'';if(!u||seen.has(u))return;seen.add(u);const s=scoreUsername(u);scored.push({username:u,mutual:d.mutual,...s});});
+  scored.sort((a,b)=>b.score-a.score);const top=scored.slice(0,10);
+  function bc(s){return s>=70?MC:s>=40?'#00D9FF':s>=20?'#FF6688':GC;}
+  const c=document.getElementById('uqTable');
+  let h='<table class="uq-table"><tr><th>#</th><th>User</th><th>Score</th><th>Barra</th><th>Penalización</th><th>Tipo</th></tr>';
+  top.forEach((t,i)=>{const co=bc(t.score);const md=t.mutual?`<span class="uq-mutual-dot" style="background:${MC};"></span>`:`<span class="uq-mutual-dot" style="background:${GC};"></span>`;
+    h+=`<tr><td class="uq-rank">${i+1}</td><td class="uq-user">@${t.username}</td><td style="font-weight:700;color:${co};">${t.score}</td>
+      <td><div class="uq-score-bar"><div class="uq-score-fill" style="width:${t.score}%;background:${co};"></div></div></td>
+      <td class="uq-penalty">len:−${t.lenPenalty} · dig:−${t.digitPenalty} · sig:−${t.signPenalty} · yzw:−${t.uncommonPenalty} · x:−${t.xPenalty} · rep:−${t.repeatPenalty}</td><td>${md}</td></tr>`;});
+  h+='</table>';c.innerHTML=h;
 }
 
-function buildUsernameQuality(active) {
-  const seen = new Set();
-  const scored = [];
-  active.forEach(d => {
-    const u = d.username || d.user || '';
-    if (!u || seen.has(u)) return;
-    seen.add(u);
-    const s = scoreUsername(u);
-    scored.push({ username: u, mutual: d.mutual, origen: d.origen || '?', ...s });
-  });
-  scored.sort((a, b) => b.score - a.score);
-  const top = scored.slice(0, 10);
-
-  function barColor(score) {
-    if (score >= 70) return MUTUAL_COLOR;
-    if (score >= 40) return '#00D9FF';
-    if (score >= 20) return '#FF6688';
-    return GHOST_COLOR;
-  }
-
-  const container = document.getElementById('uqTable');
-  let html = `<table class="uq-table">
-    <tr>
-      <th>#</th>
-      <th>User</th>
-      <th>Score</th>
-      <th>Barra</th>
-      <th>Penalización</th>
-      <th>Tipo</th>
-    </tr>`;
-
-  top.forEach((t, i) => {
-    const color = barColor(t.score);
-    const mutDot = t.mutual
-      ? `<span class="uq-mutual-dot" style="background:${MUTUAL_COLOR};" title="mutual"></span>`
-      : `<span class="uq-mutual-dot" style="background:${GHOST_COLOR};" title="no mutual"></span>`;
-    html += `<tr>
-      <td class="uq-rank">${i + 1}</td>
-      <td class="uq-user">@${t.username}</td>
-      <td style="font-weight:700;color:${color};">${t.score}</td>
-      <td>
-        <div class="uq-score-bar">
-          <div class="uq-score-fill" style="width:${t.score}%;background:${color};"></div>
-        </div>
-      </td>
-      <td class="uq-penalty">len:−${t.lenPenalty} · dig:−${t.digitPenalty} · sig:−${t.signPenalty} · yzw:−${t.uncommonPenalty} · x:−${t.xPenalty} · rep:−${t.repeatPenalty}</td>
-      <td>${mutDot}</td>
-    </tr>`;
-  });
-
-  html += '</table>';
-  container.innerHTML = html;
+function buildUqScatter(active){
+  const seen=new Set(),mP=[],gP=[];
+  active.forEach(d=>{const u=d.username||'';if(!u||d.profile_ratio<=0||seen.has(u))return;seen.add(u);const s=scoreUsername(u);const pt={x:s.score,y:d.profile_ratio,username:u};if(d.mutual)mP.push(pt);else gP.push(pt);});
+  const all=[...mP,...gP];let sX=0,sY=0,sXY=0,sX2=0,n=all.length;
+  all.forEach(p=>{sX+=p.x;sY+=p.y;sXY+=p.x*p.y;sX2+=p.x*p.x;});
+  const slope=n>1?(n*sXY-sX*sY)/(n*sX2-sX*sX):0,intercept=n>0?(sY-slope*sX)/n:0;
+  const meanY=sY/(n||1);let ssTot=0,ssRes=0;all.forEach(p=>{const pred=slope*p.x+intercept;ssRes+=(p.y-pred)**2;ssTot+=(p.y-meanY)**2;});
+  const r2=ssTot>0?(1-ssRes/ssTot):0;
+  const xMin=Math.max(0,Math.min(...all.map(p=>p.x))-5),xMax=Math.min(100,Math.max(...all.map(p=>p.x))+5);
+  const td=[{x:xMin,y:slope*xMin+intercept},{x:xMax,y:slope*xMax+intercept}];
+  new Chart(document.getElementById('scatterUqRatio'),{type:'scatter',data:{datasets:[
+    {label:'MUTUALS',data:mP,backgroundColor:MA,borderColor:MC,borderWidth:2,pointRadius:5,pointHoverRadius:8,pointStyle:'rect'},
+    {label:'NO MUTUALS',data:gP,backgroundColor:GA,borderColor:GC,borderWidth:2,pointRadius:5,pointHoverRadius:8,pointStyle:'rect'},
+    {label:`TENDENCIA (R²=${r2.toFixed(3)})`,data:td,type:'line',borderColor:'#00D9FF',borderWidth:2,borderDash:[8,4],pointRadius:0,fill:false,tension:0}
+  ]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'USERNAME SCORE',font:{size:9},color:'#737373'},border:{color:'#000',width:2},min:0,max:100},
+    y:{grid:{color:'#E8E8E8'},title:{display:true,text:'RATIO',font:{size:9},color:'#737373'},border:{color:'#000',width:2},beginAtZero:true}},
+    plugins:{legend:{position:'top',labels:{font:{size:10,weight:'600'},padding:20,color:'#737373',usePointStyle:true}},
+      tooltip:{...TT_BASE,borderColor:'#FFF',borderWidth:2,filter:item=>item.datasetIndex<2,callbacks:{title:items=>`@${items[0].raw.username}`,label:ctx=>` score: ${ctx.raw.x} → ratio: ${ctx.raw.y.toFixed(3)}`}}}}});
 }
 
-// ══════════════════════════════════════════
-// SCATTER: USERNAME SCORE vs RATIO
-// ══════════════════════════════════════════
-function buildUqScatter(active) {
-  const seen = new Set();
-  const mutualPts = [], ghostPts = [];
-
-  active.forEach(d => {
-    const u = d.username || d.user || '';
-    if (!u || d.profile_ratio <= 0 || seen.has(u)) return;
-    seen.add(u);
-    const s = scoreUsername(u);
-    const pt = { x: s.score, y: d.profile_ratio, username: u };
-    if (d.mutual) mutualPts.push(pt); else ghostPts.push(pt);
-  });
-
-  // Simple linear regression for trend line
-  const allPts = [...mutualPts, ...ghostPts];
-  let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, n = allPts.length;
-  allPts.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
-  const slope = n > 1 ? (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) : 0;
-  const intercept = n > 0 ? (sumY - slope * sumX) / n : 0;
-  // R²
-  const meanY = sumY / (n || 1);
-  let ssTot = 0, ssRes = 0;
-  allPts.forEach(p => { const pred = slope * p.x + intercept; ssRes += (p.y - pred) ** 2; ssTot += (p.y - meanY) ** 2; });
-  const r2 = ssTot > 0 ? (1 - ssRes / ssTot) : 0;
-
-  // Trend line dataset
-  const xMin = Math.max(0, Math.min(...allPts.map(p => p.x)) - 5);
-  const xMax = Math.min(100, Math.max(...allPts.map(p => p.x)) + 5);
-  const trendData = [
-    { x: xMin, y: slope * xMin + intercept },
-    { x: xMax, y: slope * xMax + intercept }
-  ];
-
-  const canvas = document.getElementById('scatterUqRatio');
-  new Chart(canvas, {
-    type: 'scatter',
-    data: {
-      datasets: [
-        {
-          label: 'MUTUALS',
-          data: mutualPts,
-          backgroundColor: MUTUAL_COLOR_A,
-          borderColor: MUTUAL_COLOR,
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 8,
-          pointStyle: 'rect'
-        },
-        {
-          label: 'NO MUTUALS',
-          data: ghostPts,
-          backgroundColor: GHOST_COLOR_A,
-          borderColor: GHOST_COLOR,
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 8,
-          pointStyle: 'rect'
-        },
-        {
-          label: `TENDENCIA (R²=${r2.toFixed(3)})`,
-          data: trendData,
-          type: 'line',
-          borderColor: '#00D9FF',
-          borderWidth: 2,
-          borderDash: [8, 4],
-          pointRadius: 0,
-          fill: false,
-          tension: 0
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          grid: { color: '#E8E8E8' },
-          title: { display: true, text: 'USERNAME SCORE (mayor = mejor)', font: { size: 9 }, color: '#737373' },
-          ticks: { font: { size: 9 }, color: '#737373' },
-          border: { color: '#000', width: 2 },
-          min: 0, max: 100
-        },
-        y: {
-          grid: { color: '#E8E8E8' },
-          title: { display: true, text: 'RATIO (followers/following)', font: { size: 9 }, color: '#737373' },
-          ticks: { font: { size: 9 }, color: '#737373' },
-          border: { color: '#000', width: 2 },
-          beginAtZero: true
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true }
-        },
-        tooltip: {
-          ...TT_BASE,
-          borderColor: '#FFF',
-          borderWidth: 2,
-          filter: item => item.datasetIndex < 2,
-          callbacks: {
-            title: items => `@${items[0].raw.username}`,
-            label: ctx => ` score: ${ctx.raw.x} → ratio: ${ctx.raw.y.toFixed(3)}`
-          }
-        }
-      }
-    }
-  });
+function buildUqByOrigin(active){
+  const seen={};active.forEach(d=>{const u=d.username||'';if(!u)return;const o=d.origen||'unknown';if(!seen[o])seen[o]=[];seen[o].push(scoreUsername(u).score);});
+  const origins=Object.keys(seen).map(o=>({name:o,avg:seen[o].reduce((a,b)=>a+b,0)/seen[o].length,count:seen[o].length})).filter(o=>o.count>0).sort((a,b)=>b.avg-a.avg);
+  if(!origins.length)return;
+  const canvas=document.getElementById('uqByOrigin'),ch=Math.max(250,origins.length*38+80);canvas.parentElement.style.minHeight=ch+'px';canvas.style.height=ch+'px';
+  function bc(a){return a>=50?MC:a>=30?'#00D9FF':a>=15?'#FF6688':GC;}
+  new Chart(canvas,{type:'bar',data:{labels:origins.map(o=>`@${o.name}`),datasets:[{label:'Score Promedio',data:origins.map(o=>parseFloat(o.avg.toFixed(1))),
+    backgroundColor:origins.map(o=>bc(o.avg)),borderColor:'#000',borderWidth:2,barPercentage:0.72,categoryPercentage:0.88}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'#E8E8E8'},title:{display:true,text:'USERNAME SCORE PROMEDIO',font:{size:9},color:'#737373'},border:{color:'#000',width:2},beginAtZero:true,max:100},
+      y:{grid:{display:false},ticks:{font:{size:10,weight:'500'},color:'#000',padding:8},border:{color:'#000',width:2}}},
+      plugins:{legend:{display:false},tooltip:{...TT_BASE,borderColor:'#FFF',borderWidth:2,callbacks:{label:ctx=>{const o=origins[ctx.dataIndex];return ` avg score: ${o.avg.toFixed(1)} (n=${o.count})`;}}
+  }}}});
 }
 
-// ══════════════════════════════════════════
-// AVG USERNAME SCORE BY ORIGIN
-// ══════════════════════════════════════════
-function buildUqByOrigin(active) {
-  const seen = {};
-  active.forEach(d => {
-    const u = d.username || d.user || '';
-    if (!u) return;
-    const o = d.origen || 'unknown';
-    if (!seen[o]) seen[o] = [];
-    const s = scoreUsername(u);
-    seen[o].push(s.score);
-  });
-
-  const origins = Object.keys(seen)
-    .map(o => ({ name: o, avg: seen[o].reduce((a, b) => a + b, 0) / seen[o].length, count: seen[o].length }))
-    .filter(o => o.count > 0)
-    .sort((a, b) => b.avg - a.avg);
-
-  if (origins.length === 0) return;
-
-  const canvas = document.getElementById('uqByOrigin');
-  const calcHeight = Math.max(250, origins.length * 38 + 80);
-  canvas.parentElement.style.minHeight = calcHeight + 'px';
-  canvas.style.height = calcHeight + 'px';
-
-  function barColor(avg) {
-    if (avg >= 50) return MUTUAL_COLOR;
-    if (avg >= 30) return '#00D9FF';
-    if (avg >= 15) return '#FF6688';
-    return GHOST_COLOR;
-  }
-
-  new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels: origins.map(o => `@${o.name}`),
-      datasets: [{
-        label: 'Score Promedio',
-        data: origins.map(o => parseFloat(o.avg.toFixed(1))),
-        backgroundColor: origins.map(o => barColor(o.avg)),
-        borderColor: '#000',
-        borderWidth: 2,
-        barPercentage: 0.72,
-        categoryPercentage: 0.88
-      }]
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { grid: { color: '#E8E8E8' }, title: { display: true, text: 'USERNAME SCORE PROMEDIO', font: { size: 9 }, color: '#737373' }, ticks: { font: { size: 9 }, color: '#737373' }, border: { color: '#000', width: 2 }, beginAtZero: true, max: 100 },
-        y: { grid: { display: false }, ticks: { font: { size: 10, weight: '500' }, color: '#000', padding: 8 }, border: { color: '#000', width: 2 } }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: { ...TT_BASE, borderColor: '#FFF', borderWidth: 2, callbacks: { label: ctx => { const o = origins[ctx.dataIndex]; return ` avg score: ${o.avg.toFixed(1)} (n=${o.count})`; } } }
-      }
-    }
-  });
-}
-
-// ══════════════════════════════════════════
-// BEST USER: BEST NAME, BEST RATIO, BEST COMBINED
-// ══════════════════════════════════════════
-function buildBestUser(active) {
-  const users = [];
-  const seen = new Set();
-  active.forEach(d => {
-    const u = d.username || d.user || '';
-    if (!u || seen.has(u) || d.profile_ratio <= 0) return;
-    seen.add(u);
-    const s = scoreUsername(u);
-    users.push({ username: u, score: s.score, ratio: d.profile_ratio, mutual: d.mutual, origen: d.origen || '?', followers: d.profile_followers, following: d.profile_following });
-  });
-
-  if (users.length === 0) return;
-
-  // Normalize for combined: score 0-100 already, ratio needs normalization
-  const maxRatio = Math.max(...users.map(u => u.ratio));
-  users.forEach(u => {
-    u.ratioNorm = maxRatio > 0 ? (u.ratio / maxRatio) * 100 : 0;
-    u.combined = (u.score * 0.5) + (u.ratioNorm * 0.5);
-  });
-
-  const bestName = [...users].sort((a, b) => b.score - a.score)[0];
-  const bestRatio = [...users].sort((a, b) => b.ratio - a.ratio)[0];
-  const bestCombined = [...users].sort((a, b) => b.combined - a.combined)[0];
-
-  const mutDot = (m) => `<span class="uq-mutual-dot" style="background:${m ? MUTUAL_COLOR : GHOST_COLOR};"></span>`;
-
-  const container = document.getElementById('bestUserGrid');
-  container.innerHTML = `
-    <div class="best-card">
-      <div class="best-crown">✦</div>
-      <div class="best-category">Mejor Nombre</div>
-      <div class="best-username">@${bestName.username}</div>
-      <div class="best-stat" style="color:#555500;">${bestName.score}</div>
-      <div class="best-detail">score · ratio: ${bestName.ratio.toFixed(3)}</div>
-      <div class="best-detail">origen: @${bestName.origen} ${mutDot(bestName.mutual)}</div>
-    </div>
-    <div class="best-card">
-      <div class="best-crown">✦</div>
-      <div class="best-category">Mejor Ratio</div>
-      <div class="best-username">@${bestRatio.username}</div>
-      <div class="best-stat" style="color:#990033;">${bestRatio.ratio.toFixed(3)}</div>
-      <div class="best-detail">${bestRatio.followers.toLocaleString()} seg / ${bestRatio.following.toLocaleString()} sig</div>
-      <div class="best-detail">score: ${bestRatio.score} · @${bestRatio.origen} ${mutDot(bestRatio.mutual)}</div>
-    </div>
-    <div class="best-card best-combined">
-      <div class="best-crown">★</div>
-      <div class="best-category">Mejor Overall</div>
-      <div class="best-username">@${bestCombined.username}</div>
-      <div class="best-stat" style="color:#1a1a1a;">${bestCombined.combined.toFixed(1)}</div>
-      <div class="best-detail">score: ${bestCombined.score} · ratio: ${bestCombined.ratio.toFixed(3)}</div>
-      <div class="best-detail">50% nombre + 50% ratio normalizado</div>
-      <div class="best-detail">origen: @${bestCombined.origen} ${mutDot(bestCombined.mutual)}</div>
-    </div>
-  `;
+function buildBestUser(active){
+  const users=[],seen=new Set();
+  active.forEach(d=>{const u=d.username||'';if(!u||seen.has(u)||d.profile_ratio<=0)return;seen.add(u);const s=scoreUsername(u);
+    users.push({username:u,score:s.score,ratio:d.profile_ratio,mutual:d.mutual,origen:d.origen||'?',followers:d.profile_followers,following:d.profile_following});});
+  if(!users.length)return;
+  const maxR=Math.max(...users.map(u=>u.ratio));users.forEach(u=>{u.ratioNorm=maxR>0?(u.ratio/maxR)*100:0;u.combined=(u.score*0.5)+(u.ratioNorm*0.5);});
+  const bN=[...users].sort((a,b)=>b.score-a.score)[0],bR=[...users].sort((a,b)=>b.ratio-a.ratio)[0],bC=[...users].sort((a,b)=>b.combined-a.combined)[0];
+  const md=m=>`<span class="uq-mutual-dot" style="background:${m?MC:GC};"></span>`;
+  document.getElementById('bestUserGrid').innerHTML=`
+    <div class="best-card"><div class="best-crown">✦</div><div class="best-category">Mejor Nombre</div><div class="best-username">@${bN.username}</div>
+      <div class="best-stat" style="color:#555500;">${bN.score}</div><div class="best-detail">score · ratio: ${bN.ratio.toFixed(3)}</div>
+      <div class="best-detail">origen: @${bN.origen} ${md(bN.mutual)}</div></div>
+    <div class="best-card"><div class="best-crown">✦</div><div class="best-category">Mejor Ratio</div><div class="best-username">@${bR.username}</div>
+      <div class="best-stat" style="color:#990033;">${bR.ratio.toFixed(3)}</div><div class="best-detail">${bR.followers.toLocaleString()} / ${bR.following.toLocaleString()}</div>
+      <div class="best-detail">score: ${bR.score} · @${bR.origen} ${md(bR.mutual)}</div></div>
+    <div class="best-card best-combined"><div class="best-crown">★</div><div class="best-category">Mejor Overall</div><div class="best-username">@${bC.username}</div>
+      <div class="best-stat" style="color:#1a1a1a;">${bC.combined.toFixed(1)}</div><div class="best-detail">score: ${bC.score} · ratio: ${bC.ratio.toFixed(3)}</div>
+      <div class="best-detail">50% nombre + 50% ratio norm</div><div class="best-detail">origen: @${bC.origen} ${md(bC.mutual)}</div></div>`;
 }
 </script>
 </body>
