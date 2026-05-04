@@ -9,29 +9,56 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="header">
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-header">
+        <h2>POLPO <span class="slash">//</span> ACCESS</h2>
+        <div class="login-subtitle">[supabase auth] → -bynd</div>
+      </div>
+      <div class="login-form">
+        <label class="login-label" for="loginEmail">EMAIL</label>
+        <input type="email" id="loginEmail" autocomplete="email" placeholder="tu@email.com">
+        <label class="login-label" for="loginPass">PASSWORD</label>
+        <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••">
+        <button class="login-btn" id="loginBtn">→ ENTRAR</button>
+        <div class="login-error" id="loginError"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPBAR (después del login) -->
+  <div class="topbar" id="topbar" style="display:none;">
+    <div class="topbar-left">
+      <span class="topbar-brand">POLPO <span class="slash">//</span> ANALYTICS</span>
+      <span class="topbar-user" id="topbarUser">—</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-status" id="dbStatus">—</span>
+      <button class="topbar-btn" id="refreshBtn" title="Refrescar desde Supabase">↻ REFRESH</button>
+      <button class="topbar-btn topbar-btn-danger" id="logoutBtn">LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header" id="header" style="display:none;">
     <div class="header-left">
       <h1>POLPO <span class="slash">//</span> Analytics</h1>
-      <div class="subtitle">[instagram growth intelligence] → dashboard v3 → -bynd</div>
+      <div class="subtitle">[instagram growth intelligence] → dashboard v4 → -bynd</div>
     </div>
     <div class="header-badge">SNCTVM TOOLS</div>
   </div>
 
-  <div class="upload-zone" id="uploadZone">
-    <div class="drop-area" id="dropArea">
-      <span class="icon">↓</span>
-      <div class="label-text">Suelta tu <strong>stats.csv</strong> aquí</div>
-      <div class="hint">click para seleccionar → generado con gen_stats.py</div>
-      <input type="file" id="fileInput" accept=".csv">
-    </div>
-    <div class="drop-area mini" id="dropAreaSelf" style="display:none;">
-      <span class="icon">🪞</span>
-      <div class="label-text">Suelta <strong>self_history.csv</strong></div>
-      <div class="hint">opcional → historial de crecimiento propio</div>
-      <input type="file" id="fileInputSelf" accept=".csv">
+  <!-- LOADING -->
+  <div class="loading-screen" id="loadingScreen" style="display:none;">
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loadingText">[CARGANDO DATOS]</div>
     </div>
   </div>
 
+  <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
     <div class="self-section" id="selfSection">
       <div class="section-title">[MI CRECIMIENTO — @<span id="selfUsername">???</span>]</div>
@@ -64,50 +91,68 @@
 
     <div class="section-title">[RESUMEN]</div>
     <div class="stats-bar" id="statsBar"></div>
+
     <div class="section-title">[ORIGEN POR TIPO]</div>
     <div class="chart-grid">
       <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> ORIGEN</h3><div class="chart-container pie"><canvas id="pieMutuals"></canvas></div></div>
       <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> ORIGEN</h3><div class="chart-container pie"><canvas id="pieGhosts"></canvas></div></div>
     </div>
+
     <div class="section-title">[RATIO EN EL TIEMPO]</div>
     <div class="chart-grid">
       <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> PERFIL DE RATIO</h3><div class="chart-container"><canvas id="lineMutuals"></canvas></div></div>
       <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> PERFIL DE RATIO</h3><div class="chart-container"><canvas id="lineGhosts"></canvas></div></div>
     </div>
+
     <div class="section-title">[DISTRIBUCIONES DE RATIO — FRECUENCIA ABSOLUTA]</div>
     <div class="dist-grid">
       <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histMutuals"></canvas></div></div>
       <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histGhosts"></canvas></div></div>
       <div class="chart-card full-polygon"><h3><span class="badge compare-badge">COMPARATIVO</span> POLÍGONO DE FRECUENCIAS → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3><div class="chart-container fixed-h"><canvas id="polyCompare"></canvas></div></div>
     </div>
+
     <div class="section-title">[DISTRIBUCIONES DE RATIO — PORCENTUAL]</div>
     <div class="dist-grid">
       <div class="chart-card"><h3><span class="badge mutual-badge">MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histMutualsPct"></canvas></div></div>
       <div class="chart-card"><h3><span class="badge ghost-badge">NO MUTUALS</span> <span class="badge pct-badge">%</span> DISTRIBUCIÓN</h3><div class="chart-container fixed-h"><canvas id="histGhostsPct"></canvas></div></div>
       <div class="chart-card full-polygon"><h3><span class="badge compare-badge">COMPARATIVO</span> <span class="badge pct-badge">%</span> POLÍGONO PORCENTUAL → <span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span></h3><div class="chart-container fixed-h"><canvas id="polyComparePct"></canvas></div></div>
     </div>
+
     <div class="section-title">[TASA DE MUTUALIDAD POR ORIGEN]</div>
     <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">RENDIMIENTO</span> ¿QUÉ ORIGEN DEVUELVE MÁS FOLLOWS?</h3><div class="chart-container" style="position:relative;min-height:200px;"><canvas id="mutualityRate"></canvas></div></div></div>
+
     <div class="section-title">[RATIO POR ORIGEN]</div>
     <div class="chart-grid">
       <div class="chart-card"><h3><span class="badge compare-badge">COMPARATIVO</span> RATIO PROMEDIO POR ORIGEN</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="avgRatioByOrigin"></canvas></div></div>
       <div class="chart-card"><h3><span class="badge compare-badge">COMPARATIVO</span> RATIO MÁXIMO POR ORIGEN</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="maxRatioByOrigin"></canvas></div></div>
     </div>
+
     <div class="section-title">[MAX RATIO — MUTUAL vs NO MUTUAL]</div>
     <div class="versus-grid" id="versusGrid"></div>
     <div class="chart-grid"><div class="chart-card full"><h3><span class="badge mutual-badge">M</span> vs <span class="badge ghost-badge">NM</span> TOP RATIOS COMPARADOS</h3><div class="chart-container fixed-h"><canvas id="versusBar"></canvas></div></div></div>
+
     <div class="section-title">[USERNAME QUALITY — TOP 10]</div>
     <div class="chart-grid"><div class="chart-card full"><h3><span class="badge mutual-badge">SCORE</span> MEJORES USERNAMES</h3><div class="uq-table-wrap" id="uqTable"></div></div></div>
+
     <div class="section-title">[CORRELACIÓN — USERNAME SCORE vs RATIO]</div>
     <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">SCATTER</span> ¿MEJOR USERNAME = MEJOR RATIO?</h3><div class="chart-container" style="height:420px;"><canvas id="scatterUqRatio"></canvas></div></div></div>
+
     <div class="section-title">[USERNAME SCORE PROMEDIO POR ORIGEN]</div>
     <div class="chart-grid"><div class="chart-card full"><h3><span class="badge compare-badge">RANKING</span> ¿QUÉ ORIGEN TIENE LOS MEJORES USERNAMES?</h3><div class="chart-container" style="position:relative;min-height:250px;"><canvas id="uqByOrigin"></canvas></div></div></div>
+
     <div class="section-title">[EL MEJOR USER — NOMBRE + RATIO]</div>
     <div class="best-user-grid" id="bestUserGrid"></div>
-    <div class="footer">POLPO ANALYTICS · JOJO'S BOT DATA · <a href="#">-bynd</a></div>
+
+    <div class="footer">POLPO ANALYTICS · SUPABASE BACKEND · <a href="#">-bynd</a></div>
   </div>
 
+  <!-- LIBS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- POLPO -->
+  <script src="config.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
