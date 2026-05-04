@@ -10,6 +10,6 @@
 // =====================================================
 
 window.POLPO_CONFIG = {
-  SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.PEGA_TU_ANON_KEY_AQUI'
+  SUPABASE_URL: 'https://jlgudpcsgbzqiryuoxam.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsZ3VkcGNzZ2J6cWlyeXVveGFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MjQ3NzQsImV4cCI6MjA5MzQwMDc3NH0.64Ox8kprffYrVaRvyDP95uV8f3mO2wzcmxJxh257_MM'
 };
