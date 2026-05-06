@@ -85,8 +85,6 @@ function parseSelfCSV(text) {
 // DASHBOARD MAIN
 // =====================================================
 function buildDashboard(data) {
-  // Si hay varios rows con status='self' (ej. user antiguo + nuevo),
-  // agarrar el más reciente por last_updated. Si no tiene last_updated, fallback al primero.
   const selfs = data.filter(d => d.status === 'self');
   const selfRow = selfs.length
     ? [...selfs].sort((a, b) => (b.last_updated || '').localeCompare(a.last_updated || ''))[0]
@@ -157,6 +155,10 @@ function buildDashboard(data) {
   buildUqScatter(active);
   buildUqByOrigin(active);
   buildBestUser(active);
+
+  // FERTILITY FITNESS — nuevas secciones
+  buildFertilityScatter(active);
+  buildTimeToMutual(active);
 
   // Re-render self history charts si ya hay data cargada
   if (globalSelfHistory) buildSelfGrowth(globalSelfHistory);
@@ -893,4 +895,340 @@ function buildBestUser(active) {
     <div class="best-card best-combined"><div class="best-crown">★</div><div class="best-category">Mejor Overall</div><div class="best-username">@${bC.username}</div>
       <div class="best-stat" style="color:#1a1a1a;">${bC.combined.toFixed(1)}</div><div class="best-detail">score: ${bC.score} · ratio: ${bC.ratio.toFixed(3)}</div>
       <div class="best-detail">50% nombre + 50% ratio norm</div><div class="best-detail">origen: @${bC.origen} ${md(bC.mutual)}</div></div>`;
+}
+
+// =====================================================
+// FERTILITY FITNESS — SCATTER (ratio vs followers abs)
+// Zonas: MUERTO / BAJO / FÉRTIL / GRANDE
+// -bynd
+// =====================================================
+function buildFertilityScatter(active) {
+  const ZONES = [
+    { label: 'MUERTO',  minF: 0,     maxF: 300,      color: 'rgba(255,51,102,0.07)',    border: '#FF3366' },
+    { label: 'BAJO',    minF: 300,   maxF: 800,      color: 'rgba(255,102,136,0.06)',   border: '#FF6688' },
+    { label: 'FÉRTIL',  minF: 800,   maxF: 20000,    color: 'rgba(232,255,0,0.07)',     border: '#E8FF00' },
+    { label: 'GRANDE',  minF: 20000, maxF: Infinity, color: 'rgba(115,115,115,0.07)',   border: '#737373' },
+  ];
+
+  const RATIO_MIN = 0.5, RATIO_MAX = 5;
+
+  function fitnessScore(pt) {
+    const inFertile = pt.followers >= 800 && pt.followers <= 20000;
+    const inRatio   = pt.y >= RATIO_MIN && pt.y <= RATIO_MAX;
+    if (inFertile && inRatio) return 'APTO';
+    if (inFertile || inRatio) return 'PARCIAL';
+    return 'NO APTO';
+  }
+
+  const mP = [], gP = [];
+  const seen = new Set();
+
+  active.forEach(d => {
+    const u = d.username || '';
+    if (!u || seen.has(u) || d.profile_ratio <= 0 || d.profile_followers <= 0) return;
+    seen.add(u);
+    const pt = {
+      x: d.profile_followers,
+      y: d.profile_ratio,
+      username: u,
+      origen: d.origen || '?',
+      followers: d.profile_followers,
+      following: d.profile_following,
+    };
+    if (d.mutual) mP.push(pt); else gP.push(pt);
+  });
+
+  if (!mP.length && !gP.length) {
+    const el = document.getElementById('fertilityScatter');
+    if (el) el.parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS]</p>';
+    return;
+  }
+
+  const allPts = [...mP, ...gP];
+  const aptos     = allPts.filter(p => fitnessScore(p) === 'APTO').length;
+  const parciales = allPts.filter(p => fitnessScore(p) === 'PARCIAL').length;
+  const noAptos   = allPts.filter(p => fitnessScore(p) === 'NO APTO').length;
+  const mutualesAptos = mP.filter(p => fitnessScore(p) === 'APTO').length;
+
+  const summEl = document.getElementById('fertilitySummary');
+  if (summEl) {
+    summEl.innerHTML = [
+      { l: 'Aptos (zona fértil)',      v: aptos,         c: 'mutual' },
+      { l: 'Parcialmente aptos',       v: parciales,     c: 'info'   },
+      { l: 'No aptos',                v: noAptos,       c: 'ghost'  },
+      { l: 'Mutuales en zona fértil',  v: mutualesAptos, c: 'mutual' },
+      { l: 'Tasa fertilidad real',     v: mP.length > 0 ? `${((mutualesAptos/mP.length)*100).toFixed(1)}%` : '—', c: 'mutual' },
+    ].map(s => `<div class="stat-card ${s.c}"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div></div>`).join('');
+  }
+
+  // P95 de followers para no estirar el eje por outliers
+  const allF = allPts.map(p => p.followers).sort((a, b) => a - b);
+  const p95idx = Math.floor(allF.length * 0.95);
+  const xMax = Math.min(allF[p95idx] * 1.15, 150000);
+
+  const zonesPlugin = {
+    id: 'fertilityZones',
+    beforeDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea) return;
+      const xScale = scales.x;
+      const { top, bottom } = chartArea;
+
+      ZONES.forEach(z => {
+        const xLeft  = xScale.getPixelForValue(Math.max(z.minF, 100));
+        const xRight = xScale.getPixelForValue(Math.min(z.maxF, xMax));
+        if (xRight < chartArea.left || xLeft > chartArea.right) return;
+        const cL = Math.max(xLeft,  chartArea.left);
+        const cR = Math.min(xRight, chartArea.right);
+
+        ctx.save();
+        ctx.fillStyle = z.color;
+        ctx.fillRect(cL, top, cR - cL, bottom - top);
+
+        ctx.fillStyle = z.border;
+        ctx.font = "600 9px 'JetBrains Mono', monospace";
+        ctx.textAlign = 'center';
+        ctx.globalAlpha = 0.8;
+        const lx = Math.min(Math.max((cL + cR) / 2, chartArea.left + 22), chartArea.right - 22);
+        ctx.fillText(z.label, lx, top + 15);
+
+        ctx.strokeStyle = z.border;
+        ctx.globalAlpha = 0.25;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(cR, top + 22);
+        ctx.lineTo(cR, bottom);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+  };
+
+  const chExist = Chart.getChart('fertilityScatter');
+  if (chExist) chExist.destroy();
+
+  new Chart(document.getElementById('fertilityScatter'), {
+    type: 'scatter',
+    plugins: [zonesPlugin],
+    data: {
+      datasets: [
+        {
+          label: 'MUTUALS',
+          data: mP,
+          backgroundColor: '#E8FF0099',
+          borderColor: '#E8FF00',
+          borderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 9,
+          pointStyle: 'rect',
+        },
+        {
+          label: 'NO MUTUALS',
+          data: gP,
+          backgroundColor: '#FF336644',
+          borderColor: '#FF3366',
+          borderWidth: 1.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointStyle: 'circle',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'nearest', intersect: true },
+      scales: {
+        x: {
+          type: 'logarithmic',
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'FOLLOWERS (escala log)', font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+          min: 100,
+          max: xMax,
+          ticks: {
+            color: '#737373',
+            callback: v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v,
+          }
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'RATIO (followers / following)', font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+          min: 0,
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true }
+        },
+        tooltip: {
+          ...TT_BASE,
+          borderColor: '#E8FF00',
+          borderWidth: 2,
+          callbacks: {
+            title: items => `@${items[0].raw.username}`,
+            label: ctx => [
+              ` followers: ${ctx.raw.followers.toLocaleString()}`,
+              ` ratio: ${ctx.raw.y.toFixed(3)}`,
+              ` origen: @${ctx.raw.origen}`,
+              ` fitness: ${fitnessScore(ctx.raw)}`,
+            ]
+          }
+        }
+      }
+    }
+  });
+}
+
+// =====================================================
+// TIME-TO-MUTUAL
+// Histograma de días desde follow hasta mutual
+// -bynd
+// =====================================================
+function buildTimeToMutual(active) {
+  const deltas = [];
+  active.forEach(d => {
+    if (!d.mutual || !d.followed_at || !d.last_updated) return;
+    const t0 = new Date(d.followed_at).getTime();
+    const t1 = new Date(d.last_updated).getTime();
+    if (isNaN(t0) || isNaN(t1) || t1 < t0) return;
+    const days = (t1 - t0) / (1000 * 60 * 60 * 24);
+    if (days > 180) return;
+    deltas.push({ days, username: d.username || '?', ratio: d.profile_ratio });
+  });
+
+  const el = document.getElementById('timeToMutual');
+  const summEl = document.getElementById('ttmSummary');
+
+  if (!deltas.length) {
+    if (el) el.parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN DATOS · requiere followed_at y last_updated en mutuales]</p>';
+    if (summEl) summEl.innerHTML = '<p style="color:#737373;font-family:var(--font-mono);font-size:0.65rem;text-align:center;">[Sin datos suficientes]</p>';
+    return;
+  }
+
+  const sorted = [...deltas].sort((a, b) => a.days - b.days);
+  const median = sorted[Math.floor(sorted.length / 2)].days;
+  const mean   = deltas.reduce((s, d) => s + d.days, 0) / deltas.length;
+  const p25    = sorted[Math.floor(sorted.length * 0.25)].days;
+  const p75    = sorted[Math.floor(sorted.length * 0.75)].days;
+  const fastest = sorted[0];
+
+  const within3  = deltas.filter(d => d.days <= 3).length;
+  const within7  = deltas.filter(d => d.days <= 7).length;
+  const within30 = deltas.filter(d => d.days <= 30).length;
+
+  if (summEl) {
+    summEl.innerHTML = [
+      { l: 'Mediana (días)',      v: median.toFixed(1),  c: 'mutual' },
+      { l: 'Promedio (días)',     v: mean.toFixed(1),    c: 'info'   },
+      { l: 'P25 → P75',          v: `${p25.toFixed(1)}d → ${p75.toFixed(1)}d`, c: 'info' },
+      { l: '≤ 3 días',           v: `${within3} (${((within3/deltas.length)*100).toFixed(0)}%)`, c: 'mutual' },
+      { l: '≤ 7 días',           v: `${within7} (${((within7/deltas.length)*100).toFixed(0)}%)`, c: 'mutual' },
+      { l: '≤ 30 días',          v: `${within30} (${((within30/deltas.length)*100).toFixed(0)}%)`, c: 'info' },
+      { l: 'Más rápido',         v: `@${fastest.username} · ${fastest.days.toFixed(1)}d`, c: 'mutual' },
+    ].map(s => `<div class="stat-card ${s.c}"><div class="stat-label">${s.l}</div><div class="stat-value" style="font-size:1.1rem;">${s.v}</div></div>`).join('');
+  }
+
+  const binEdges  = [0, 1, 2, 3, 5, 7, 14, 30, 60, 180];
+  const binLabels = binEdges.slice(0,-1).map((lo, i) => `${lo}–${binEdges[i+1]}d`);
+  const bins = new Array(binLabels.length).fill(0);
+
+  deltas.forEach(d => {
+    for (let i = 0; i < binEdges.length - 1; i++) {
+      if (d.days >= binEdges[i] && d.days < binEdges[i+1]) { bins[i]++; break; }
+    }
+  });
+
+  const binColors = binEdges.slice(0,-1).map((lo, i) => {
+    const hi = binEdges[i+1];
+    if (hi <= 3)  return '#E8FF00';
+    if (hi <= 7)  return '#B8CC00';
+    if (hi <= 14) return '#00D9FF';
+    if (hi <= 30) return '#FF6688';
+    return '#FF3366';
+  });
+
+  const medianPlugin = {
+    id: 'medianLine',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      let medBin = 0;
+      for (let i = 0; i < binEdges.length - 1; i++) {
+        if (median >= binEdges[i] && median < binEdges[i+1]) { medBin = i; break; }
+      }
+      const x = scales.x.getPixelForValue(medBin);
+      ctx.save();
+      ctx.strokeStyle = '#E8FF00';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.fillStyle = '#000';
+      ctx.font = "700 9px 'JetBrains Mono', monospace";
+      ctx.textAlign = 'center';
+      // badge fondo
+      const lw = ctx.measureText(`med ${median.toFixed(1)}d`).width + 8;
+      ctx.fillStyle = '#E8FF00';
+      ctx.fillRect(x - lw/2, chartArea.top + 4, lw, 16);
+      ctx.fillStyle = '#000';
+      ctx.fillText(`med ${median.toFixed(1)}d`, x, chartArea.top + 15);
+      ctx.restore();
+    }
+  };
+
+  const chExist = Chart.getChart('timeToMutual');
+  if (chExist) chExist.destroy();
+
+  new Chart(document.getElementById('timeToMutual'), {
+    type: 'bar',
+    plugins: [medianPlugin],
+    data: {
+      labels: binLabels,
+      datasets: [{
+        label: 'Mutuales',
+        data: bins,
+        backgroundColor: binColors.map(c => c + 'AA'),
+        borderColor: binColors,
+        borderWidth: 2,
+        barPercentage: 0.9,
+        categoryPercentage: 0.9,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'DÍAS DESDE FOLLOW HASTA MUTUAL (proxy via last_updated)', font: { size: 9 }, color: '#737373' },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'Nº MUTUALES', font: { size: 9 }, color: '#737373' },
+          beginAtZero: true,
+          border: { color: '#000', width: 2 },
+          ticks: { stepSize: 1 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tt('#E8FF00'),
+          callbacks: {
+            label: ctx => {
+              const pct = ((ctx.raw / deltas.length) * 100).toFixed(1);
+              return ` ${ctx.raw} mutuales (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
 }
