@@ -903,17 +903,19 @@ function buildBestUser(active) {
 // -bynd
 // =====================================================
 function buildFertilityScatter(active) {
+  // Zonas calibradas para cuenta ~150 followers
+  // A menor cuenta propia, menor es el sweet spot de seguidores objetivo
   const ZONES = [
-    { label: 'MUERTO',  minF: 0,     maxF: 300,      color: 'rgba(255,51,102,0.07)',    border: '#FF3366' },
-    { label: 'BAJO',    minF: 300,   maxF: 800,      color: 'rgba(255,102,136,0.06)',   border: '#FF6688' },
-    { label: 'FÉRTIL',  minF: 800,   maxF: 20000,    color: 'rgba(232,255,0,0.07)',     border: '#E8FF00' },
-    { label: 'GRANDE',  minF: 20000, maxF: Infinity, color: 'rgba(115,115,115,0.07)',   border: '#737373' },
+    { label: 'MUERTO',  minF: 0,    maxF: 10,   color: 'rgba(255,51,102,0.09)',    border: '#FF3366' },
+    { label: 'BAJO',    minF: 10,   maxF: 50,   color: 'rgba(255,102,136,0.06)',   border: '#FF6688' },
+    { label: 'FÉRTIL',  minF: 50,   maxF: 1000, color: 'rgba(232,255,0,0.08)',     border: '#E8FF00' },
+    { label: 'GRANDE',  minF: 1000, maxF: Infinity, color: 'rgba(115,115,115,0.07)', border: '#737373' },
   ];
 
-  const RATIO_MIN = 0.5, RATIO_MAX = 5;
+  const RATIO_MIN = 0.5, RATIO_MAX = 8;
 
   function fitnessScore(pt) {
-    const inFertile = pt.followers >= 800 && pt.followers <= 20000;
+    const inFertile = pt.followers >= 50 && pt.followers <= 1000;
     const inRatio   = pt.y >= RATIO_MIN && pt.y <= RATIO_MAX;
     if (inFertile && inRatio) return 'APTO';
     if (inFertile || inRatio) return 'PARCIAL';
@@ -964,7 +966,7 @@ function buildFertilityScatter(active) {
   // P95 de followers para no estirar el eje por outliers
   const allF = allPts.map(p => p.followers).sort((a, b) => a - b);
   const p95idx = Math.floor(allF.length * 0.95);
-  const xMax = Math.min(allF[p95idx] * 1.15, 150000);
+  const xMax = Math.min(allF[p95idx] * 1.2, 5000);
 
   const zonesPlugin = {
     id: 'fertilityZones',
@@ -975,7 +977,7 @@ function buildFertilityScatter(active) {
       const { top, bottom } = chartArea;
 
       ZONES.forEach(z => {
-        const xLeft  = xScale.getPixelForValue(Math.max(z.minF, 100));
+        const xLeft  = xScale.getPixelForValue(Math.max(z.minF, 5));
         const xRight = xScale.getPixelForValue(Math.min(z.maxF, xMax));
         if (xRight < chartArea.left || xLeft > chartArea.right) return;
         const cL = Math.max(xLeft,  chartArea.left);
@@ -1045,7 +1047,7 @@ function buildFertilityScatter(active) {
           grid: { color: '#E8E8E8' },
           title: { display: true, text: 'FOLLOWERS (escala log)', font: { size: 9 }, color: '#737373' },
           border: { color: '#000', width: 2 },
-          min: 100,
+          min: 5,
           max: xMax,
           ticks: {
             color: '#737373',
