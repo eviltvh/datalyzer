@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <!-- TOPBAR (después del login) -->
+  <!-- TOPBAR -->
   <div class="topbar" id="topbar" style="display:none;">
     <div class="topbar-left">
       <span class="topbar-brand">POLPO <span class="slash">//</span> ANALYTICS</span>
@@ -60,6 +60,8 @@
 
   <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
+
+    <!-- SELF -->
     <div class="self-section" id="selfSection">
       <div class="section-title">[MI CRECIMIENTO — @<span id="selfUsername">???</span>]</div>
       <div class="self-hero" id="selfHero"></div>
@@ -142,6 +144,46 @@
 
     <div class="section-title">[EL MEJOR USER — NOMBRE + RATIO]</div>
     <div class="best-user-grid" id="bestUserGrid"></div>
+
+    <!-- ================================================
+         FERTILITY FITNESS
+         =============================================== -->
+    <div class="section-title">[FERTILITY FITNESS — ¿QUIÉN PUEDE REPRODUCIRSE?]</div>
+
+    <!-- Stats resumen -->
+    <div class="stats-bar" id="fertilitySummary" style="margin-bottom:1.5rem;"></div>
+
+    <!-- Scatter: followers vs ratio con zonas -->
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>
+          <span class="badge" style="background:#E8FF00;color:#000;border:2px solid #000;">FITNESS</span>
+          SCATTER — FOLLOWERS vs RATIO · ZONAS DE FERTILIDAD
+          <span style="font-size:0.55rem;color:#737373;margin-left:0.5rem;">
+            □ MUERTO &lt;300 · □ BAJO 300–800 · □ FÉRTIL 800–20k · □ GRANDE &gt;20k
+          </span>
+        </h3>
+        <div class="chart-container" style="height:480px;">
+          <canvas id="fertilityScatter"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time to mutual -->
+    <div class="section-title">[TIME-TO-MUTUAL — VELOCIDAD DE REPRODUCCIÓN]</div>
+    <div class="stats-bar" id="ttmSummary" style="margin-bottom:1.5rem;"></div>
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>
+          <span class="badge mutual-badge">TIEMPO</span>
+          DÍAS DESDE FOLLOW HASTA MUTUAL
+          <span style="font-size:0.55rem;color:#737373;margin-left:0.5rem;">proxy: followed_at → last_updated</span>
+        </h3>
+        <div class="chart-container" style="height:320px;">
+          <canvas id="timeToMutual"></canvas>
+        </div>
+      </div>
+    </div>
 
     <div class="footer">POLPO ANALYTICS · SUPABASE BACKEND · <a href="#">-bynd</a></div>
   </div>
