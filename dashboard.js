@@ -159,6 +159,7 @@ function buildDashboard(data) {
   // FERTILITY FITNESS — nuevas secciones
   buildFertilityScatter(active);
   buildTimeToMutual(active);
+  buildFertileZoneDetail(active);
 
   // Re-render self history charts si ya hay data cargada
   if (globalSelfHistory) buildSelfGrowth(globalSelfHistory);
@@ -1233,4 +1234,190 @@ function buildTimeToMutual(active) {
       }
     }
   });
+}
+
+// =====================================================
+// FERTILE ZONE DETAIL
+// Histograma fino de mutuales dentro de zona fértil
+// + roster de usernames por bin para identificar sweet spot
+// -bynd
+// =====================================================
+function buildFertileZoneDetail(active) {
+  const FERTILE_MIN = 50, FERTILE_MAX = 1000;
+  const BIN_SIZE = 50;
+
+  // Solo mutuales dentro de la zona fértil
+  const inZone = active.filter(d =>
+    d.mutual &&
+    d.profile_followers >= FERTILE_MIN &&
+    d.profile_followers <= FERTILE_MAX &&
+    d.profile_followers > 0
+  );
+
+  const tableEl = document.getElementById('fertileZoneTable');
+  const canvasEl = document.getElementById('fertileZoneHist');
+
+  if (!inZone.length) {
+    if (canvasEl) canvasEl.parentElement.innerHTML = '<p style="color:#737373;text-align:center;padding:2rem;font-family:var(--font-mono);font-size:0.7rem;">[SIN MUTUALES EN ZONA FÉRTIL]</p>';
+    if (tableEl) tableEl.innerHTML = '';
+    return;
+  }
+
+  // Construir bins
+  const numBins = Math.ceil((FERTILE_MAX - FERTILE_MIN) / BIN_SIZE);
+  const bins = Array.from({ length: numBins }, (_, i) => ({
+    lo: FERTILE_MIN + i * BIN_SIZE,
+    hi: FERTILE_MIN + (i + 1) * BIN_SIZE,
+    users: [],
+    count: 0,
+  }));
+
+  inZone.forEach(d => {
+    const idx = Math.min(Math.floor((d.profile_followers - FERTILE_MIN) / BIN_SIZE), numBins - 1);
+    bins[idx].users.push({ username: d.username, followers: d.profile_followers, ratio: d.profile_ratio });
+    bins[idx].count++;
+  });
+
+  const labels = bins.map(b => `${b.lo}–${b.hi}`);
+  const counts = bins.map(b => b.count);
+
+  // Color por densidad: más mutuales = más amarillo
+  const maxCount = Math.max(...counts, 1);
+  const barColors = counts.map(c => {
+    const intensity = c / maxCount;
+    // De gris (#737373) a neon (#E8FF00) según densidad
+    const r = Math.round(115 + (232 - 115) * intensity);
+    const g = Math.round(115 + (255 - 115) * intensity);
+    const b = Math.round(115 + (0   - 115) * intensity);
+    return `rgb(${r},${g},${b})`;
+  });
+
+  // Plugin: label de count encima de cada barra
+  const labelPlugin = {
+    id: 'barLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx, data, scales } = chart;
+      data.datasets[0].data.forEach((val, i) => {
+        if (!val) return;
+        const bar = chart.getDatasetMeta(0).data[i];
+        ctx.save();
+        ctx.fillStyle = '#000';
+        ctx.font = "700 10px 'JetBrains Mono', monospace";
+        ctx.textAlign = 'center';
+        ctx.fillText(val, bar.x, bar.y - 6);
+        ctx.restore();
+      });
+    }
+  };
+
+  const chExist = Chart.getChart('fertileZoneHist');
+  if (chExist) chExist.destroy();
+
+  new Chart(canvasEl, {
+    type: 'bar',
+    plugins: [labelPlugin],
+    data: {
+      labels,
+      datasets: [{
+        label: 'Mutuales',
+        data: counts,
+        backgroundColor: barColors.map(c => c.replace('rgb', 'rgba').replace(')', ',0.75)')),
+        borderColor: barColors,
+        borderWidth: 2,
+        barPercentage: 0.85,
+        categoryPercentage: 0.9,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'FOLLOWERS (bins de 50)', font: { size: 9 }, color: '#737373' },
+          ticks: { font: { size: 9 }, color: '#737373' },
+          border: { color: '#000', width: 2 },
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'Nº MUTUALES', font: { size: 9 }, color: '#737373' },
+          beginAtZero: true,
+          border: { color: '#000', width: 2 },
+          ticks: { stepSize: 1 }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tt('#E8FF00'),
+          callbacks: {
+            title: items => `${items[0].label} followers`,
+            label: ctx => {
+              const b = bins[ctx.dataIndex];
+              const names = b.users.map(u => `@${u.username}`).join(', ');
+              return [
+                ` ${ctx.raw} mutual${ctx.raw !== 1 ? 'es' : ''}`,
+                ` ${names}`
+              ];
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Tabla de usernames por bin — solo bins con al menos 1 mutual
+  const activeBins = bins.filter(b => b.count > 0);
+  if (!tableEl) return;
+
+  // Sweet spot = bin con más mutuales
+  const sweetBin = [...bins].sort((a, b) => b.count - a.count)[0];
+
+  let html = `
+    <div style="margin-bottom:1rem;font-family:var(--font-mono);font-size:0.6rem;color:#737373;letter-spacing:0.1em;">
+      SWEET SPOT DETECTADO →
+      <span style="background:#E8FF00;color:#000;padding:0.15rem 0.5rem;border:2px solid #000;font-weight:700;">
+        ${sweetBin.lo}–${sweetBin.hi} FOLLOWERS
+      </span>
+      · ${sweetBin.count} mutual${sweetBin.count !== 1 ? 'es' : ''} en ese rango
+    </div>
+    <table class="uq-table">
+      <tr>
+        <th>RANGO</th>
+        <th>COUNT</th>
+        <th>USUARIOS (mutuales en zona fértil)</th>
+        <th>RATIO PROM</th>
+      </tr>`;
+
+  activeBins.forEach(b => {
+    const isSweetSpot = b.lo === sweetBin.lo;
+    const avgRatio = (b.users.reduce((s, u) => s + u.ratio, 0) / b.users.length).toFixed(2);
+    const userTags = b.users
+      .sort((a, z) => z.ratio - a.ratio) // orden por ratio desc
+      .map(u => `<span style="
+        display:inline-block;
+        background:${isSweetSpot ? '#E8FF00' : '#F5F5F4'};
+        border:2px solid #000;
+        padding:0.15rem 0.5rem;
+        font-family:var(--font-mono);
+        font-size:0.7rem;
+        font-weight:${isSweetSpot ? '700' : '400'};
+        margin:2px;
+      ">@${u.username} <span style="color:#737373;font-size:0.6rem;">${u.followers}f · r${u.ratio.toFixed(2)}</span></span>`)
+      .join('');
+
+    html += `<tr style="${isSweetSpot ? 'background:#FFFDE0;' : ''}">
+      <td class="uq-rank" style="font-size:0.75rem;font-family:var(--font-mono);">
+        ${isSweetSpot ? '★ ' : ''}${b.lo}–${b.hi}
+      </td>
+      <td style="font-weight:700;font-size:1.1rem;font-family:var(--font-serif);color:${isSweetSpot ? '#000' : '#737373'};">
+        ${b.count}
+      </td>
+      <td style="padding:0.6rem 0.8rem;">${userTags}</td>
+      <td style="font-family:var(--font-mono);font-size:0.75rem;color:#737373;">${avgRatio}</td>
+    </tr>`;
+  });
+
+  html += '</table>';
+  tableEl.innerHTML = html;
 }
