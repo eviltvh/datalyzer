@@ -1436,7 +1436,7 @@ function buildPrefixUniqueness(all) {
 
   // Universo: usernames únicos en lowercase
   const usernames = [...new Set(
-    active.map(d => (d.username || '').toLowerCase()).filter(Boolean)
+    all.map(d => (d.username || '').toLowerCase()).filter(Boolean)
   )];
 
   if (!usernames.length) return;
