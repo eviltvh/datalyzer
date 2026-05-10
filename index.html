@@ -205,6 +205,45 @@
       </div>
     </div>
 
+    <!-- ================================================
+         PREFIX UNIQUENESS
+         =============================================== -->
+    <div class="section-title">[PREFIX UNIQUENESS — ¿CUÁNTAS LETRAS PARA ENCONTRAR A ALGUIEN?]</div>
+    <div class="stats-bar" id="prefixSummary" style="margin-bottom:1.5rem;"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>
+          <span class="badge mutual-badge">PREFIX</span>
+          DISTRIBUCIÓN DE LETRAS NECESARIAS PARA ≤ 10 RESULTADOS
+          <span style="font-size:0.55rem;color:#737373;margin-left:0.5rem;">+ curva acumulada · línea negra = tu teoría (K=4)</span>
+        </h3>
+        <div class="chart-container" style="height:380px;">
+          <canvas id="prefixHist"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>
+          <span class="badge compare-badge">CASOS ESPECIALES</span>
+          RECOMENDACIÓN DE LETRAS POR TIPO DE INICIO DE USERNAME
+        </h3>
+        <div class="uq-table-wrap" id="prefixCategoryTable"></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card full">
+        <h3>
+          <span class="badge ghost-badge">DIFÍCILES</span>
+          TOP 15 — USERNAMES QUE REQUIEREN MÁS LETRAS PARA SER ÚNICOS
+        </h3>
+        <div class="uq-table-wrap" id="prefixWorstTable"></div>
+      </div>
+    </div>
+
     <div class="footer">POLPO ANALYTICS · SUPABASE BACKEND · <a href="#">-bynd</a></div>
   </div>
 
