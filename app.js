@@ -221,7 +221,9 @@ function destroyAllCharts() {
     'histMutualsPct', 'histGhostsPct', 'polyComparePct',
     'mutualityRate', 'avgRatioByOrigin', 'maxRatioByOrigin',
     'versusBar', 'scatterUqRatio', 'uqByOrigin',
-    'selfFollowersLine', 'selfFollowingLine', 'selfRatioLine'
+    'selfFollowersLine', 'selfFollowingLine', 'selfRatioLine',
+    'fertilityScatter', 'timeToMutual', 'fertileZoneHist',
+    'prefixHist'
   ];
   canvasIds.forEach(id => {
     const ch = Chart.getChart(id);
