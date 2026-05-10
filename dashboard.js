@@ -162,7 +162,7 @@ function buildDashboard(data) {
   buildFertileZoneDetail(active);
 
   // PREFIX UNIQUENESS
-  buildPrefixUniqueness(active);
+  buildPrefixUniqueness(nd);
 
   // Re-render self history charts si ya hay data cargada
   if (globalSelfHistory) buildSelfGrowth(globalSelfHistory);
@@ -1431,7 +1431,7 @@ function buildFertileZoneDetail(active) {
 // resultados a ≤ MAX_RESULTS en la lista completa?
 // -bynd
 // =====================================================
-function buildPrefixUniqueness(nd) {
+function buildPrefixUniqueness(all) {
   const MAX_RESULTS = 10;
 
   // Universo: usernames únicos en lowercase
