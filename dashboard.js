@@ -156,10 +156,13 @@ function buildDashboard(data) {
   buildUqByOrigin(active);
   buildBestUser(active);
 
-  // FERTILITY FITNESS — nuevas secciones
+  // FERTILITY FITNESS
   buildFertilityScatter(active);
   buildTimeToMutual(active);
   buildFertileZoneDetail(active);
+
+  // PREFIX UNIQUENESS
+  buildPrefixUniqueness(active);
 
   // Re-render self history charts si ya hay data cargada
   if (globalSelfHistory) buildSelfGrowth(globalSelfHistory);
@@ -1420,4 +1423,280 @@ function buildFertileZoneDetail(active) {
 
   html += '</table>';
   tableEl.innerHTML = html;
+}
+
+// =====================================================
+// PREFIX UNIQUENESS
+// ¿cuántas letras del prefijo bastan para reducir
+// resultados a ≤ MAX_RESULTS en la lista completa?
+// -bynd
+// =====================================================
+function buildPrefixUniqueness(active) {
+  const MAX_RESULTS = 10;
+
+  // Universo: usernames únicos en lowercase
+  const usernames = [...new Set(
+    active.map(d => (d.username || '').toLowerCase()).filter(Boolean)
+  )];
+
+  if (!usernames.length) return;
+
+  // Construir map global de prefijos → conteo
+  const prefixMap = new Map();
+  usernames.forEach(u => {
+    const max = Math.min(u.length, 25);
+    for (let k = 1; k <= max; k++) {
+      const p = u.slice(0, k);
+      prefixMap.set(p, (prefixMap.get(p) || 0) + 1);
+    }
+  });
+
+  function categorize(u) {
+    if (u.startsWith('__')) return '__';
+    if (u.startsWith('_'))  return '_';
+    if (/^[0-9]/.test(u))   return '0-9';
+    return 'a-z';
+  }
+
+  // Para cada username: encontrar minK tal que prefix(minK) tenga ≤ MAX matches
+  const results = usernames.map(u => {
+    let minK = u.length;
+    let matchesAtMin = prefixMap.get(u) || 1;
+    for (let k = 1; k <= u.length; k++) {
+      const p = u.slice(0, k);
+      const c = prefixMap.get(p);
+      if (c <= MAX_RESULTS) { minK = k; matchesAtMin = c; break; }
+    }
+    return { username: u, minK, length: u.length, cat: categorize(u), matches: matchesAtMin };
+  });
+
+  // === STATS BAR ===
+  const total = results.length;
+  const avgK = results.reduce((s, r) => s + r.minK, 0) / total;
+  const sortedK = [...results].map(r => r.minK).sort((a, b) => a - b);
+  const medianK = sortedK[Math.floor(total / 2)];
+  const within3 = results.filter(r => r.minK <= 3).length;
+  const within4 = results.filter(r => r.minK <= 4).length;
+  const within5 = results.filter(r => r.minK <= 5).length;
+
+  const summEl = document.getElementById('prefixSummary');
+  if (summEl) {
+    summEl.innerHTML = [
+      { l: 'Usernames únicos',       v: total,                                                    c: 'info' },
+      { l: 'K promedio',             v: avgK.toFixed(2),                                          c: 'mutual' },
+      { l: 'K mediano',              v: medianK,                                                  c: 'mutual' },
+      { l: '≤ 3 letras',             v: `${within3} (${((within3/total)*100).toFixed(0)}%)`,      c: 'info' },
+      { l: '≤ 4 letras (tu teoría)', v: `${within4} (${((within4/total)*100).toFixed(0)}%)`,      c: 'mutual' },
+      { l: '≤ 5 letras',             v: `${within5} (${((within5/total)*100).toFixed(0)}%)`,      c: 'info' },
+    ].map(s => `<div class="stat-card ${s.c}"><div class="stat-label">${s.l}</div><div class="stat-value">${s.v}</div></div>`).join('');
+  }
+
+  // === HISTOGRAMA + ACUMULADO ===
+  const maxK = Math.max(...sortedK);
+  const labels = [], bins = [];
+  const cap = Math.min(maxK, 10);
+  for (let k = 1; k <= cap; k++) {
+    labels.push(`${k}`);
+    bins.push(results.filter(r => r.minK === k).length);
+  }
+  if (maxK > 10) {
+    labels.push('10+');
+    bins.push(results.filter(r => r.minK > 10).length);
+  }
+
+  const cumPct = [];
+  let cum = 0;
+  bins.forEach(b => { cum += b; cumPct.push((cum / total) * 100); });
+
+  const colors = labels.map((_, i) => {
+    const k = i + 1;
+    if (k <= 3) return '#E8FF00';
+    if (k === 4) return '#B8CC00';
+    if (k === 5) return '#00D9FF';
+    if (k === 6) return '#FF6688';
+    return '#FF3366';
+  });
+
+  const chExist = Chart.getChart('prefixHist');
+  if (chExist) chExist.destroy();
+
+  // Plugin: línea vertical en K=4 (la teoría)
+  const theoryLine = {
+    id: 'theoryLine',
+    afterDatasetsDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      // index 3 = label "4" (porque labels[0]="1", labels[1]="2", ...)
+      if (labels.length < 4) return;
+      const x = scales.x.getPixelForValue(3);
+      ctx.save();
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.fillStyle = '#000';
+      ctx.fillRect(x - 26, chartArea.top + 4, 52, 16);
+      ctx.fillStyle = '#E8FF00';
+      ctx.font = "700 9px 'JetBrains Mono', monospace";
+      ctx.textAlign = 'center';
+      ctx.fillText('teoría', x, chartArea.top + 15);
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('prefixHist'), {
+    type: 'bar',
+    plugins: [theoryLine],
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Nº usernames',
+          data: bins,
+          backgroundColor: colors.map(c => c + 'AA'),
+          borderColor: colors,
+          borderWidth: 2,
+          yAxisID: 'y',
+          order: 2,
+          barPercentage: 0.9,
+          categoryPercentage: 0.9,
+        },
+        {
+          type: 'line',
+          label: '% acumulado',
+          data: cumPct,
+          borderColor: '#000',
+          backgroundColor: 'transparent',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#000',
+          pointBorderColor: '#E8FF00',
+          pointBorderWidth: 2,
+          yAxisID: 'y1',
+          tension: 0.2,
+          order: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'LETRAS NECESARIAS (K)', font: { size: 9 }, color: '#737373' },
+          ticks: { font: { size: 11, weight: '700' }, color: '#000' },
+          border: { color: '#000', width: 2 },
+        },
+        y: {
+          grid: { color: '#E8E8E8' },
+          title: { display: true, text: 'Nº USERNAMES', font: { size: 9 }, color: '#737373' },
+          beginAtZero: true,
+          border: { color: '#000', width: 2 },
+          position: 'left',
+          ticks: { stepSize: 1 }
+        },
+        y1: {
+          grid: { display: false },
+          title: { display: true, text: '% ACUMULADO', font: { size: 9 }, color: '#000' },
+          beginAtZero: true,
+          max: 100,
+          border: { color: '#000', width: 2 },
+          position: 'right',
+          ticks: { callback: v => v + '%' }
+        }
+      },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 10, weight: '600' }, padding: 20, color: '#737373', usePointStyle: true, pointStyle: 'rect' } },
+        tooltip: {
+          ...tt('#E8FF00'),
+          callbacks: {
+            title: items => `K = ${items[0].label} letra${items[0].label !== '1' ? 's' : ''}`,
+            label: ctx => {
+              if (ctx.datasetIndex === 0) {
+                const pct = ((ctx.raw / total) * 100).toFixed(1);
+                return ` ${ctx.raw} usernames (${pct}%)`;
+              }
+              return ` acumulado: ${ctx.raw.toFixed(1)}%`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // === TABLA POR CATEGORÍA ===
+  const cats = {};
+  results.forEach(r => {
+    if (!cats[r.cat]) cats[r.cat] = [];
+    cats[r.cat].push(r.minK);
+  });
+
+  const catLabels = {
+    '__':  '__ (doble underscore)',
+    '_':   '_ (underscore simple)',
+    '0-9': '0-9 (empieza con dígito)',
+    'a-z': 'a-z (letra normal)'
+  };
+
+  const catOrder = ['__', '_', '0-9', 'a-z'];
+
+  const catEl = document.getElementById('prefixCategoryTable');
+  if (catEl) {
+    let html = '<table class="uq-table"><tr><th>CATEGORÍA</th><th>COUNT</th><th>K PROM</th><th>K MED</th><th>K MAX</th><th>RECOMENDACIÓN (P90)</th></tr>';
+    catOrder.forEach(c => {
+      if (!cats[c]) return;
+      const ks = [...cats[c]].sort((a, b) => a - b);
+      const avg = ks.reduce((s, k) => s + k, 0) / ks.length;
+      const med = ks[Math.floor(ks.length / 2)];
+      const mx = ks[ks.length - 1];
+      const p90 = ks[Math.floor(ks.length * 0.9)] || mx;
+      const isSpecial = c !== 'a-z';
+
+      html += `<tr style="${isSpecial ? 'background:#FFFDE0;' : ''}">
+        <td style="font-family:var(--font-mono);font-weight:${isSpecial ? '700' : '500'};">${isSpecial ? '★ ' : ''}${catLabels[c]}</td>
+        <td style="font-family:var(--font-serif);font-size:1.2rem;font-weight:700;">${ks.length}</td>
+        <td style="font-family:var(--font-mono);">${avg.toFixed(2)}</td>
+        <td style="font-family:var(--font-mono);">${med}</td>
+        <td style="font-family:var(--font-mono);color:#FF3366;font-weight:700;">${mx}</td>
+        <td style="font-family:var(--font-mono);font-size:0.7rem;">
+          <span style="background:#E8FF00;border:2px solid #000;padding:0.15rem 0.55rem;font-weight:700;">usar ${p90} letras</span>
+          <span style="color:#737373;margin-left:0.5rem;">cubre 90%</span>
+        </td>
+      </tr>`;
+    });
+    html += '</table>';
+    catEl.innerHTML = html;
+  }
+
+  // === TOP 15 PEORES ===
+  const worst = [...results].sort((a, b) => b.minK - a.minK || b.matches - a.matches).slice(0, 15);
+  const worstEl = document.getElementById('prefixWorstTable');
+  if (worstEl) {
+    let html = '<table class="uq-table"><tr><th>#</th><th>USERNAME</th><th>K MIN</th><th>PREFIJO ÚNICO</th><th>COLISIONES EN K-1</th></tr>';
+    worst.forEach((r, i) => {
+      const prefix = r.username.slice(0, r.minK);
+      const prevPrefix = r.minK > 1 ? r.username.slice(0, r.minK - 1) : null;
+      const prevCount = prevPrefix ? prefixMap.get(prevPrefix) : null;
+      html += `<tr>
+        <td class="uq-rank">${i + 1}</td>
+        <td class="uq-user">@${r.username}</td>
+        <td style="font-family:var(--font-serif);font-size:1.3rem;font-weight:700;color:#FF3366;">${r.minK}</td>
+        <td style="font-family:var(--font-mono);font-size:0.75rem;">
+          <code style="background:#E8FF00;padding:0.15rem 0.5rem;border:2px solid #000;font-weight:700;">${prefix}</code>
+          <span style="color:#737373;margin-left:0.4rem;">→ ${r.matches} match${r.matches !== 1 ? 'es' : ''}</span>
+        </td>
+        <td style="font-family:var(--font-mono);font-size:0.7rem;color:#737373;">
+          ${prevPrefix === null ? '—' : `<code style="background:#FFE0E8;padding:0.1rem 0.4rem;border:1px solid #FF3366;">${prevPrefix}</code> → ${prevCount} matches (demasiados)`}
+        </td>
+      </tr>`;
+    });
+    html += '</table>';
+    worstEl.innerHTML = html;
+  }
 }
