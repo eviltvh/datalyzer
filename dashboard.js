@@ -1431,7 +1431,7 @@ function buildFertileZoneDetail(active) {
 // resultados a ≤ MAX_RESULTS en la lista completa?
 // -bynd
 // =====================================================
-function buildPrefixUniqueness(active) {
+function buildPrefixUniqueness(nd) {
   const MAX_RESULTS = 10;
 
   // Universo: usernames únicos en lowercase
