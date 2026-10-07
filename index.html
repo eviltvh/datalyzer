@@ -45,7 +45,7 @@
   <div class="header" id="header" style="display:none;">
     <div class="header-left">
       <h1>POLPO <span class="slash">//</span> Analytics</h1>
-      <div class="subtitle">[instagram growth intelligence] → dashboard v4 → -bynd</div>
+      <div class="subtitle">[instagram growth intelligence] → dashboard v5 → -bynd</div>
     </div>
     <div class="header-badge">SNCTVM TOOLS</div>
   </div>
@@ -60,6 +60,14 @@
 
   <!-- DASHBOARD -->
   <div class="dashboard" id="dashboard">
+
+    <!-- TABS -->
+    <nav class="view-tabs" role="tablist">
+      <button class="view-tab active" role="tab" data-view="viewGrowth" aria-selected="true">CRECIMIENTO</button>
+      <button class="view-tab" role="tab" data-view="viewNetwork" aria-selected="false">RED · ANÁLISIS</button>
+    </nav>
+
+    <div class="view" id="viewGrowth">
 
     <!-- SELF -->
     <div class="self-section" id="selfSection">
@@ -244,6 +252,11 @@
       </div>
     </div>
 
+    </div><!-- /viewGrowth -->
+
+    <!-- RED · ANÁLISIS (lo llena analysis.js) -->
+    <div class="view" id="viewNetwork" hidden></div>
+
     <div class="footer">POLPO ANALYTICS · SUPABASE BACKEND · <a href="#">-bynd</a></div>
   </div>
 
@@ -254,6 +267,7 @@
   <!-- POLPO -->
   <script src="config.js"></script>
   <script src="dashboard.js"></script>
+  <script src="analysis.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
