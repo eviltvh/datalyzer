@@ -1,9 +1,7 @@
 // =====================================================
 // POLPO ANALYTICS · CONFIG
 // -bynd
-// =====================================================
-// Edita estos valores con tus credenciales de Supabase
-// Settings → API → "Project URL" + "anon public" key
+
 //
 // La anon key es PÚBLICA por diseño, no es un secreto.
 // La seguridad real la dan las RLS policies (ver README.md).
