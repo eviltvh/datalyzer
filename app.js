@@ -140,7 +140,7 @@ async function doLogout() {
 // =====================================================
 // DB FETCH (paginado para soportar > 1000 rows)
 // =====================================================
-async function fetchAllStandUsers() {
+async function fetchAll(table, columns, label) {
   const PAGE_SIZE = 1000;
   let all = [];
   let from = 0;
@@ -149,9 +149,10 @@ async function fetchAllStandUsers() {
   let pages = 0;
 
   while (pages < MAX_PAGES) {
+    if (label) loadingText.textContent = `[${label} · ${all.length} rows]`;
     const { data, error } = await polpoSupabase
-      .from('stand_users')
-      .select('username,status,mutual,origen,profile_followers,profile_following,profile_ratio,followed_at,last_updated')
+      .from(table)
+      .select(columns)
       .range(from, from + PAGE_SIZE - 1);
 
     if (error) throw error;
@@ -165,6 +166,40 @@ async function fetchAllStandUsers() {
   return all;
 }
 
+// ey columnas base + las que agregaron migraciones posteriores (si no existen, se cae al set anterior) -bynd
+const SU_BASE = 'username,status,mutual,origen,profile_followers,profile_following,profile_ratio,followed_at,last_updated';
+const SU_TRIES = [
+  SU_BASE + ',mutual_checked_at,unfollowed_at,request_state,is_private',
+  SU_BASE + ',mutual_checked_at,unfollowed_at',
+  SU_BASE,
+];
+
+async function fetchAllStandUsers() {
+  let lastErr = null;
+  for (const cols of SU_TRIES) {
+    try {
+      return await fetchAll('stand_users', cols, 'STAND_USERS');
+    } catch (err) {
+      lastErr = err;
+      if (!/column/i.test(err?.message || '')) throw err;
+      console.warn('[stand_users] columnas faltantes, reintento con menos:', err.message);
+    }
+  }
+  throw lastErr;
+}
+
+// aaa tablas de red: opcionales, nunca tumban el dashboard -bynd
+async function fetchOptional(table, columns, label) {
+  try {
+    return { rows: await fetchAll(table, columns, label), error: null };
+  } catch (err) {
+    console.warn(`[${table}]`, err);
+    const msg = String(err?.message || '');
+    const missing = err?.code === '42P01' || err?.code === 'PGRST205' || /does not exist|could not find|schema cache/i.test(msg);
+    return { rows: [], error: missing ? `${table} no existe (corre la migración)` : `${table}: ${msg}` };
+  }
+}
+
 function transformDbRow(row) {
   return {
     username: row.username || '',
@@ -176,7 +211,23 @@ function transformDbRow(row) {
     profile_ratio: parseFloat(row.profile_ratio) || 0,
     followed_at: row.followed_at || '',
     last_updated: row.last_updated || '',
+    mutual_checked_at: row.mutual_checked_at || '',
+    unfollowed_at: row.unfollowed_at || '',
+    request_state: row.request_state || '',
+    is_private: row.is_private ?? null,
     days_active: 0
+  };
+}
+
+function transformRedRow(row) {
+  return {
+    username: row.username,
+    score: row.score != null ? Number(row.score) : null,
+    total_conns: Number(row.total_conns || 0),
+    mutual_conns: Number(row.mutual_conns || 0),
+    others: Number(row.others || 0),
+    follows_you: row.follows_you === true,
+    checked_at: row.checked_at || '',
   };
 }
 
@@ -196,11 +247,25 @@ async function loadFromDB() {
       return;
     }
 
-    setStatus(`${transformed.length} rows · ok`, true);
+    const [fb, red] = await Promise.all([
+      fetchOptional('followed_by', 'username,connection', 'FOLLOWED_BY'),
+      fetchOptional('red_perfil', 'username,score,total_conns,mutual_conns,others,follows_you,checked_at', 'RED_PERFIL'),
+    ]);
+    const missing = [fb.error, red.error].filter(Boolean);
+    if (!fb.error && !fb.rows.length) missing.push('followed_by vacío (¿sin datos o falta policy RLS de select?)');
+    if (!red.error && !red.rows.length) missing.push('red_perfil vacío (¿sin datos o falta policy RLS de select?)');
+
+    setStatus(`${transformed.length} rows · ${fb.rows.length} conexiones · ok`, true);
     hideLoading();
     dashboardEl.classList.add('visible');
     destroyAllCharts();
     buildDashboard(transformed);
+    setNetworkData({
+      users: transformed,
+      followedBy: fb.rows,
+      red: red.rows.map(transformRedRow),
+      missing,
+    });
   } catch (err) {
     console.error('[loadFromDB]', err);
     hideLoading();
@@ -214,24 +279,38 @@ async function loadFromDB() {
 // CHART CLEANUP (para refresh sin duplicar charts)
 // =====================================================
 function destroyAllCharts() {
-  const canvasIds = [
-    'pieMutuals', 'pieGhosts',
-    'lineMutuals', 'lineGhosts',
-    'histMutuals', 'histGhosts', 'polyCompare',
-    'histMutualsPct', 'histGhostsPct', 'polyComparePct',
-    'mutualityRate', 'avgRatioByOrigin', 'maxRatioByOrigin',
-    'versusBar', 'scatterUqRatio', 'uqByOrigin',
-    'selfFollowersLine', 'selfFollowingLine', 'selfRatioLine',
-    'fertilityScatter', 'timeToMutual', 'fertileZoneHist',
-    'prefixHist'
-  ];
-  canvasIds.forEach(id => {
-    const ch = Chart.getChart(id);
-    if (ch) {
-      try { ch.destroy(); } catch (e) { /* noop */ }
-    }
+  // ey todas las instancias vivas, asi no hay que mantener la lista de ids a mano -bynd
+  Object.values(Chart.instances).forEach(ch => {
+    try { ch.destroy(); } catch (e) { /* noop */ }
   });
+  if (typeof NA !== 'undefined') NA.charts = [];
 }
+
+// =====================================================
+// TABS (crecimiento / red · análisis)
+// =====================================================
+function showView(viewId, push = true) {
+  const tabs = document.querySelectorAll('.view-tab');
+  tabs.forEach(t => {
+    const on = t.dataset.view === viewId;
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.view').forEach(v => { v.hidden = v.id !== viewId; });
+  if (push) history.replaceState(null, '', viewId === 'viewNetwork' ? '#red' : '#crecimiento');
+
+  const view = document.getElementById(viewId);
+  if (viewId === 'viewNetwork' && NA.dirty) {
+    renderNetworkView();
+  } else {
+    // aaa charts creados mientras la vista estaba oculta quedan en 0px -bynd
+    Object.values(Chart.instances).forEach(ch => {
+      if (view.contains(ch.canvas)) ch.resize();
+    });
+  }
+}
+document.querySelectorAll('.view-tab').forEach(t => t.addEventListener('click', () => showView(t.dataset.view)));
+if (location.hash === '#red') showView('viewNetwork', false);
 
 // =====================================================
 // EVENT LISTENERS
